@@ -1,6 +1,6 @@
 import { createServer } from 'http'
 import { readFileSync } from 'fs'
-// * 정적 라우팅 예시
+// * 정적 라우팅 예시 
 createServer((req, res) => {
   const staticRoute = (needFile, statusCodeNumber, contentType) => {
     const readFile = readFileSync(needFile, 'utf-8', (err) => {
