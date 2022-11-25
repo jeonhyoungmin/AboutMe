@@ -4,9 +4,9 @@ import { readFileSync } from 'fs'
 createServer((req, res) => {
   const staticRoute = (needFile, statusCodeNumber, contentType) => {
     const readFile = readFileSync(needFile, 'utf-8', (err) => {
-      if(err) throw err
+      if (err) throw err
     })
-    res.writeHead(statusCodeNumber, {"Content-Type" : contentType})
+    res.writeHead(statusCodeNumber, { "Content-Type": contentType })
     res.write(readFile)
     res.end()
   }
