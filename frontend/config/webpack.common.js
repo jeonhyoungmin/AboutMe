@@ -4,12 +4,13 @@ const path = require("path");
 const { Template } = require("webpack");
 
 module.exports = {
-  mode: "development", // 나누어서 사용할 예정이기 때문에 제외
+  // mode: "development", // 나누어서 사용할 예정이기 때문에 제외
   entry: { index: "./src/index.ts", test: "./src/test.ts" },
-  output: {
-    path: path.resolve(__dirname, "../dist"),
-    filename: "[name].[contenthash].js",
-  },
+  // output: {
+  //   path: path.resolve(__dirname, "../dist"),
+  //   filename: "[name].[contenthash].js",
+  // },
+  // output은 dev와 prod 모드에서 생성할 예정이기 때문에 제외
   module: {
     rules: [
       {
