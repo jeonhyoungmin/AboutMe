@@ -20,6 +20,11 @@
       //         "allowNumber" : false
       //     }
       // ]
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 2016
+      // * three.js 는 ecmaVersion이 2016 이상, sourceType이 module이여만 한다.
     }
   }
   // ts 사용 예정
