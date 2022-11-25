@@ -1,0 +1,22 @@
+  {
+    "root": true,
+  // 루트 디렉토리인지 아닌지 확인, 그 외 이유 있음
+    "plugins": [
+        // "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended"
+        // "plugin:@typescript-eslint/recommended"
+    ],
+    // "parser": "@typescript-eslint/parser",
+    "rules": {
+        // "@typescript-eslint/strict-boolean-expressions": [
+        //     2,
+        //     {
+        //         "allowString" : false,
+        //         "allowNumber" : false
+        //     }
+        // ]
+    }
+}
+// ts 사용 예정
