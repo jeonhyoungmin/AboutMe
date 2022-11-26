@@ -1,4 +1,6 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 class App {
   constructor() {
@@ -16,12 +18,16 @@ class App {
     this._setupCamera();
     this._setupLight();
     this._setupModel();
-    // this._setupControls();
+    this._setupControls();
 
     window.onresize = this.resize.bind(this);
     this.resize();
 
     requestAnimationFrame(this.render.bind(this));
+  }
+
+  _setupControls() {
+    this._controls = new OrbitControls(this._camera, this._root);
   }
 
   _setupCamera() {
@@ -41,13 +47,10 @@ class App {
   }
 
   _setupModel() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshPhongMaterial({ color: 0x44a88 });
-
-    const cube = new THREE.Mesh(geometry, material);
-
-    this._scene.add(cube);
-    this._cube = cube;
+    new GLTFLoader().load('../public/gltf/character.glb', (gltf) => {
+      const model = gltf.scene;
+      this._scene.add(model);
+    });
   }
 
   resize() {
@@ -68,8 +71,7 @@ class App {
 
   update(time) {
     time *= 0.001;
-    this._cube.rotation.x = time;
-    this._cube.rotation.y = time;
+    this._controls.update();
   }
 }
 
