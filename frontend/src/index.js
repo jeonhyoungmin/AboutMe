@@ -35,6 +35,9 @@ class App {
 
   _setupControls() {
     this._controls = new OrbitControls(this._camera, this._root);
+    // model을 카메라 중앙으로 오도록 세팅
+    this._controls.target.set(0, 10, 0);
+    console.log(this._controls);
 
     // * 초당 fps 표시
     const stats = new Stats();
