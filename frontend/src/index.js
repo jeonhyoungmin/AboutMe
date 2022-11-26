@@ -44,6 +44,7 @@ class App {
     this._root.appendChild(stats.dom);
     this._fps = stats;
     // console.log(stats);
+    // console.log(stats);
   }
 
   _setupCamera() {
