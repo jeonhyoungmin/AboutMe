@@ -35,8 +35,8 @@ class App {
 
   _setupControls() {
     this._controls = new OrbitControls(this._camera, this._root);
-    // model을 카메라 중앙으로 오도록 세팅
-    this._controls.target.set(0, 10, 0);
+    // * model을 카메라 중앙으로 오도록 세팅
+    this._controls.target.set(0, 1, 0);
     console.log(this._controls);
 
     // * 초당 fps 표시
@@ -50,8 +50,8 @@ class App {
   _setupCamera() {
     const width = this._root.clientWidth;
     const height = this._root.clientHeight;
-    const camera = new THREE.PerspectiveCamera(20, width / height, 1, 5000);
-    camera.position.set(0, 20, 150);
+    const camera = new THREE.PerspectiveCamera(5, width / height, 1, 20000);
+    camera.position.set(0, 2, 50);
     this._camera = camera;
   }
 
@@ -60,7 +60,7 @@ class App {
     const color = 0xffffff;
     const intensity = 1.5;
 
-    const pointLight = new THREE.PointLight(color, intensity, 3000);
+    const pointLight = new THREE.PointLight(color, intensity, 1000);
     pointLight.position.set(x, y, z);
 
     this._scene.add(pointLight);
@@ -85,14 +85,14 @@ class App {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this._scene.add(ambientLight);
 
-    this._addPointLight(500, 150, 500, 0xff0000);
-    this._addPointLight(-500, 150, 500, 0xffff00);
-    this._addPointLight(-500, 150, -500, 0x00ff00);
-    this._addPointLight(500, 150, -500, 0x0000ff);
+    this._addPointLight(100, 30, 100, 0xff0000);
+    this._addPointLight(-100, 30, 100, 0xffff00);
+    this._addPointLight(-100, 30, -100, 0x00ff00);
+    this._addPointLight(100, 30, -100, 0x0000ff);
 
     // * 그림자 생성을 위한 directional light
     const shadowLight = new THREE.DirectionalLight(0xffffff, 0.1);
-    shadowLight.position.set(200, 500, 200);
+    shadowLight.position.set(100, 100, 100);
     shadowLight.target.position.set(0, 0, 0);
     const directionalLightHelper = new THREE.DirectionalLightHelper(
       shadowLight,
@@ -105,8 +105,8 @@ class App {
 
     // * 그림자를 위한 광원 처리
     shadowLight.castShadow = true;
-    shadowLight.shadow.mapSize.width = 3000;
-    shadowLight.shadow.mapSize.height = 3000;
+    shadowLight.shadow.mapSize.width = 1024;
+    shadowLight.shadow.mapSize.height = 1024;
     shadowLight.shadow.camera.top = shadowLight.shadow.camera.right = 700;
     shadowLight.shadow.camera.bottom = shadowLight.shadow.camera.left = -700;
     shadowLight.shadow.camera.near = 100;
@@ -120,7 +120,7 @@ class App {
 
   _setupModel() {
     // * geometry 평면
-    const planeGeometry = new THREE.PlaneGeometry(500, 500);
+    const planeGeometry = new THREE.PlaneGeometry(50, 50);
     const planeMaterial = new THREE.MeshPhongMaterial({ color: 0x878787 });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2;
@@ -139,16 +139,34 @@ class App {
         }
       });
 
+      const animationClips = gltf.animations;
+      console.log(animationClips);
+      const mixer = new THREE.AnimationMixer(model);
+      const animationsMap = {};
+      animationClips.forEach((clip) => {
+        const name = clip.name;
+        console.log(name);
+        animationsMap[name] = mixer.clipAction(clip);
+      });
+
+      // ! play하기 위해서는 mixer 객체를 통해서 캐릭터의 애니메이션을
+      // ! 프레임마다 업데이트 해줘야 함
+      this._mixer = mixer;
+      this._animationMap = animationsMap;
+      this._currentAnimationAction = this._animationMap['idle'];
+      // * play
+      this._currentAnimationAction.play();
+
       // * 캐릭터 바운딩 박스
       const box = new THREE.Box3().setFromObject(model);
-      model.position.y = (box.max.y - box.min.y + 2) / 2;
+      model.position.y = (box.max.y - box.min.y - 0.8) / 2;
 
       // * 바운딩 박스 표시
       const boxHelper = new THREE.BoxHelper(model);
       this._scene.add(boxHelper);
 
       // * 월드 좌표계 축 표시 helper
-      const axisHelper = new THREE.AxesHelper(1000);
+      const axisHelper = new THREE.AxesHelper(200);
       this._scene.add(axisHelper);
 
       // 모델과 바운딩 박스 표시는 다른 메서드에서 사용해야 하므로 변수 설정
@@ -183,6 +201,13 @@ class App {
     }
 
     this._fps.update();
+
+    if (this._mixer) {
+      // * deltaTime = 현재 시간 - 이전 시간
+      const deltaTime = time - this._previousTime;
+      this._mixer.update(deltaTime);
+    }
+    this._previousTime = time;
   }
 }
 
