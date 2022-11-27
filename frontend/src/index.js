@@ -44,14 +44,61 @@ class App {
     this._root.appendChild(stats.dom);
     this._fps = stats;
     // console.log(stats);
-    // console.log(stats);
+
+    // 무슨 키가 눌렸는지 확인
+    this._pressedKeys = {};
+
+    // * 키가 눌렸을 때 이벤트
+    document.addEventListener('keydown', (event) => {
+      this._pressedKeys[event.key.toLowerCase()] = true;
+      this._processAnimation();
+    });
+
+    // * 눌린 키가 떼졌을 때 이벤트
+    document.addEventListener('keyup', (event) => {
+      this._pressedKeys[event.key.toLowerCase()] = false;
+      this._processAnimation();
+    });
+  }
+
+  _processAnimation() {
+    const previousAnimationAction = this._currentAnimationAction;
+
+    if (
+      this._pressedKeys['w'] ||
+      this._pressedKeys['a'] ||
+      this._pressedKeys['s'] ||
+      this._pressedKeys['d']
+    ) {
+      if (this._pressedKeys['shift']) {
+        // "run" 애니메이션 추가 필요, "walk"로 대체
+        this._currentAnimationAction = this._animationMap['walk'];
+        this._speed = 20;
+      } else {
+        this._currentAnimationAction = this._animationMap['walk'];
+        this._speed = 5;
+      }
+    } else {
+      this._currentAnimationAction = this._animationMap['idle'];
+      this._speed = 0;
+    }
+
+    if (previousAnimationAction != this._currentAnimationAction) {
+      // 만약 이전 액션과 현재 액션이 동일하지 않으면
+      // 이전 액션은 0.5초에 걸쳐서 서서히 소멸
+      previousAnimationAction.fadeOut(0.5);
+      // 새롭게 지정된 애니메이션 액션은
+      // reset을 통해 첫 번째 프레임으로 설정하고
+      // 0.5초에 걸쳐서 서서히 들어나게 하고 플레이
+      this._currentAnimationAction.reset().fadeIn(0.5).play();
+    }
   }
 
   _setupCamera() {
     const width = this._root.clientWidth;
     const height = this._root.clientHeight;
     const camera = new THREE.PerspectiveCamera(5, width / height, 1, 20000);
-    camera.position.set(0, 2, 50);
+    camera.position.set(0, 2, 40);
     this._camera = camera;
   }
 
@@ -191,8 +238,39 @@ class App {
     requestAnimationFrame(this.render.bind(this));
   }
 
+  // * 눌러진 키에 따른 보정값
+  _directionOffset() {
+    const pressedKeys = this._pressedKeys;
+    let directionOffset = 0; // w키
+
+    if (pressedKeys['w']) {
+      if (pressedKeys['a']) {
+        directionOffset = Math.PI / 4; // w+a (45도)
+      } else if (pressedKeys['d']) {
+        directionOffset = -Math.PI / 4; // w+d (-45도)
+      }
+    } else if (pressedKeys['s']) {
+      if (pressedKeys['a']) {
+        directionOffset = Math.PI / 4 + Math.PI / 2; // s+a (135도)
+      } else if (pressedKeys['d']) {
+        directionOffset = -Math.PI / 4 - Math.PI / 2; // s+d (-135도)
+      } else {
+        directionOffset = Math.PI; // s (180도)
+      }
+    } else if (pressedKeys['a']) {
+      directionOffset = Math.PI / 2; // a (90도)
+    } else if (pressedKeys['d']) {
+      directionOffset = -Math.PI / 2; // d (-90도)
+    }
+
+    return directionOffset;
+  }
+
+  // 캐릭터 이동 초기 값
+  _speed = 0;
+
   update(time) {
-    time *= 0.001;
+    time *= 0.001; // ms(밀리세컨드) => s(세컨드) 변환
     this._controls.update();
 
     // * model의 이동에 따라 업데이트
@@ -206,6 +284,60 @@ class App {
       // * deltaTime = 현재 시간 - 이전 시간
       const deltaTime = time - this._previousTime;
       this._mixer.update(deltaTime);
+
+      const angleCameraDirectionAxisY =
+        Math.atan2(
+          this._camera.position.x - this._model.position.x,
+          this._camera.position.z - this._model.position.z
+        ) + Math.PI;
+
+      // angleCameraDirectionAxisY 값 만큼 캐릭터 회전
+      // 회전을 위해 quaternion 사용
+      const rotateQuarternion = new THREE.Quaternion();
+      rotateQuarternion.setFromAxisAngle(
+        // y축에 대해서 angleCameraDirectionAxisY 만큼 회전
+        new THREE.Vector3(0, 1, 0),
+        angleCameraDirectionAxisY + this._directionOffset()
+        // wasd 키를 눌렀을 때, 해당 방향을 바라보기 위해서는
+        // angleCameraDirectionAxisY + ? (값 보정 필요)
+        // 보정값은 notion 이미지 참고
+      );
+
+      // rotateQuarternion로 캐릭터를 회전시키는 코드
+      this._model.quaternion.rotateTowards(
+        rotateQuarternion,
+        THREE.MathUtils.degToRad(5)
+        // 한 번에 회전시키는 것이 아닌, '5'도씩 단계적으로 회전
+      );
+
+      const walkDirection = new THREE.Vector3();
+      this._camera.getWorldDirection(walkDirection);
+
+      walkDirection.y = 0; // 공중이나 아래로 가지 않도록
+      walkDirection.normalize(); // 정규화
+
+      // 키보드 입력에 대해 이동해야 할 방향각 만큼 회전
+      walkDirection.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        this._directionOffset()
+      );
+
+      // 캐릭터 x, z 평면에서 이동할 변이 값을 델타 타임과 속도로 계산
+      const moveX = walkDirection.x * (this._speed * deltaTime);
+      const moveZ = walkDirection.z * (this._speed * deltaTime);
+
+      this._model.position.x += moveX;
+      this._model.position.z += moveZ;
+
+      this._camera.position.x += moveX;
+      this._camera.position.z += moveZ;
+
+      // 캐릭터가 항상 카메라의 중심에 있도록 조정
+      this._controls.target.set(
+        this._model.position.x,
+        this._model.position.y + 1,
+        this._model.position.z
+      );
     }
     this._previousTime = time;
   }
