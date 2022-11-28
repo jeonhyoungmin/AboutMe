@@ -38,6 +38,10 @@ class App {
     // * model을 카메라 중앙으로 오도록 세팅
     this._controls.target.set(0, 1, 0);
     console.log(this._controls);
+    // * orbitcontrols의 shift 기능 제거
+    this._controls.enablePan = false;
+    // * 화면 회전 부드럽게
+    this._controls.enableDamping = true;
 
     // * 초당 fps 표시
     const stats = new Stats();
@@ -73,14 +77,20 @@ class App {
       if (this._pressedKeys['shift']) {
         // "run" 애니메이션 추가 필요, "walk"로 대체
         this._currentAnimationAction = this._animationMap['walk'];
-        this._speed = 20;
+        // this._speed = 20;
+        this._maxSpeed = 20;
+        this._acceleration = 2;
       } else {
         this._currentAnimationAction = this._animationMap['walk'];
-        this._speed = 5;
+        // this._speed = 5;
+        this._maxSpeed = 5;
+        this._acceleration = 1;
       }
     } else {
       this._currentAnimationAction = this._animationMap['idle'];
       this._speed = 0;
+      this._maxSpeed = 0;
+      this._acceleration = 0;
     }
 
     if (previousAnimationAction != this._currentAnimationAction) {
@@ -238,6 +248,8 @@ class App {
     requestAnimationFrame(this.render.bind(this));
   }
 
+  _previousDirectionOffset = 0;
+
   // * 눌러진 키에 따른 보정값
   _directionOffset() {
     const pressedKeys = this._pressedKeys;
@@ -261,13 +273,21 @@ class App {
       directionOffset = Math.PI / 2; // a (90도)
     } else if (pressedKeys['d']) {
       directionOffset = -Math.PI / 2; // d (-90도)
+    } else {
+      directionOffset = this._previousDirectionOffset;
     }
+    // * 마지막으로 눌린 방향으로 캐릭터의 시선 고정
+    // * 아무것도 눌리기 전에는 directionOffset = 0(previousDirectionOffset)이였다가
+    this._previousDirectionOffset = directionOffset;
+    // * 다른 키가 눌린 뒤에는 그 눌린 키의 방향이 previousDirectionOffset이 됨
 
     return directionOffset;
   }
 
   // 캐릭터 이동 초기 값
   _speed = 0;
+  _maxSpeed = 0;
+  _acceleration = 0;
 
   update(time) {
     time *= 0.001; // ms(밀리세컨드) => s(세컨드) 변환
@@ -321,6 +341,12 @@ class App {
         new THREE.Vector3(0, 1, 0),
         this._directionOffset()
       );
+
+      if (this._speed < this._maxSpeed) {
+        this._speed += this._acceleration;
+      } else {
+        this._speed -= this._acceleration * 2;
+      }
 
       // 캐릭터 x, z 평면에서 이동할 변이 값을 델타 타임과 속도로 계산
       const moveX = walkDirection.x * (this._speed * deltaTime);
