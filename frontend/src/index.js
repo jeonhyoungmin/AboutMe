@@ -1,8 +1,11 @@
 import * as THREE from 'three';
-import { ShaderChunk } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
+
+// * 3차원 공간을 분할하는 자료구조: 3차원 공간을 효율적으로 분할하고 빠르게 충돌 검사를 할 수 있음
+import { Octree } from 'three/examples/jsm/math/Octree.js';
+import { Capsule } from 'three/examples/jsm/math/Capsule.js';
 
 class App {
   constructor() {
@@ -22,6 +25,7 @@ class App {
     const scene = new THREE.Scene();
     this._scene = scene;
 
+    // this._setupOctree();
     this._setupCamera();
     this._setupLight();
     this._setupModel();
@@ -33,11 +37,15 @@ class App {
     requestAnimationFrame(this.render.bind(this));
   }
 
+  _setupOctree(model) {
+    this._worldOctree = new Octree();
+    this._worldOctree.fromGraphNode(model);
+  }
+
   _setupControls() {
     this._controls = new OrbitControls(this._camera, this._root);
     // * model을 카메라 중앙으로 오도록 세팅
     this._controls.target.set(0, 1, 0);
-    console.log(this._controls);
     // * orbitcontrols의 shift 기능 제거
     this._controls.enablePan = false;
     // * 화면 회전 부드럽게
@@ -47,18 +55,15 @@ class App {
     const stats = new Stats();
     this._root.appendChild(stats.dom);
     this._fps = stats;
-    // console.log(stats);
 
     // 무슨 키가 눌렸는지 확인
     this._pressedKeys = {};
 
-    // * 키가 눌렸을 때 이벤트
     document.addEventListener('keydown', (event) => {
       this._pressedKeys[event.key.toLowerCase()] = true;
       this._processAnimation();
     });
 
-    // * 눌린 키가 떼졌을 때 이벤트
     document.addEventListener('keyup', (event) => {
       this._pressedKeys[event.key.toLowerCase()] = false;
       this._processAnimation();
@@ -75,7 +80,6 @@ class App {
       this._pressedKeys['d']
     ) {
       if (this._pressedKeys['shift']) {
-        // "run" 애니메이션 추가 필요, "walk"로 대체
         this._currentAnimationAction = this._animationMap['walk'];
         // this._speed = 20;
         this._maxSpeed = 20;
@@ -104,16 +108,112 @@ class App {
     }
   }
 
+  _setupModel() {
+    // * geometry 평면
+    // const planeGeometry = new THREE.PlaneGeometry(50, 50);
+    // const planeMaterial = new THREE.MeshPhongMaterial({ color: 0x878787 });
+    // const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    // plane.rotation.x = -Math.PI / 2;
+    // this._scene.add(plane);
+    // * 평면은 그림자를 받기만 함
+    // plane.receiveShadow = true;
+
+    // 충돌 검사를 위한 코드
+    // this._worldOctree.fromGraphNode(plane);
+
+    const loader = new GLTFLoader();
+
+    loader.load('../public/gltf/character.glb', (gltf) => {
+      const model = gltf.scene;
+      this._scene.add(model);
+
+      // * model은 그림자를 생성하기만 함
+      model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+        }
+      });
+
+      const animationClips = gltf.animations;
+      console.log(animationClips);
+      const mixer = new THREE.AnimationMixer(model);
+      const animationsMap = {};
+      animationClips.forEach((clip) => {
+        const name = clip.name;
+        console.log(name);
+        animationsMap[name] = mixer.clipAction(clip);
+      });
+
+      // ! play하기 위해서는 mixer 객체를 통해서 캐릭터의 애니메이션을
+      // ! 프레임마다 업데이트 해줘야 함
+      this._mixer = mixer;
+      this._animationMap = animationsMap;
+      this._currentAnimationAction = this._animationMap['idle'];
+      // * play
+      this._currentAnimationAction.play();
+
+      // * 캐릭터 바운딩 박스
+      const box = new THREE.Box3().setFromObject(model);
+      model.position.y = (box.max.y - box.min.y - 0.8) / 2;
+
+      // 캡슐화를 위한 캐릭터의 높이 값과 지름 값 가져오기
+      const height = box.max.y - box.min.y;
+      const diameter = box.max.z - box.min.z;
+
+      // * 캡슐화
+      model._capsule = new Capsule(
+        new THREE.Vector3(0, diameter / 2, 0),
+        new THREE.Vector3(0, height - diameter / 2, 0),
+        diameter / 2
+      );
+
+      // * 바운딩 박스 표시
+      const boxHelper = new THREE.BoxHelper(model);
+      this._scene.add(boxHelper);
+
+      // * 월드 좌표계 축 표시 helper
+      const axisHelper = new THREE.AxesHelper(200);
+      this._scene.add(axisHelper);
+
+      // 모델과 바운딩 박스 표시는 다른 메서드에서 사용해야 하므로 변수 설정
+      this._boxHelper = boxHelper;
+      this._model = model;
+
+      // const boxG = new THREE.BoxGeometry(10, diameter, 10);
+      // const boxM = new THREE.Mesh(boxG, planeMaterial);
+      // boxM.receiveShadow = true;
+      // boxM.castShadow = true;
+      // boxM.position.set(15, 0, 0);
+      // this._scene.add(boxM);
+
+      // this._worldOctree.fromGraphNode(boxM);
+    });
+
+    loader.load('../public/gltf/space.glb', (gltf) => {
+      const model = gltf.scene;
+
+      this._scene.add(model);
+
+      model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      this._setupOctree(model);
+    });
+  }
+
   _setupCamera() {
     const width = this._root.clientWidth;
     const height = this._root.clientHeight;
-    const camera = new THREE.PerspectiveCamera(5, width / height, 1, 20000);
+    const camera = new THREE.PerspectiveCamera(5, width / height, 0.1, 20000);
     camera.position.set(0, 2, 40);
     this._camera = camera;
   }
 
   _addPointLight(x, y, z, helperColor) {
-    // * 포인터 light
     const color = 0xffffff;
     const intensity = 1.5;
 
@@ -175,79 +275,6 @@ class App {
     this._scene.add(shadowCameraHelper);
   }
 
-  _setupModel() {
-    // * geometry 평면
-    const planeGeometry = new THREE.PlaneGeometry(50, 50);
-    const planeMaterial = new THREE.MeshPhongMaterial({ color: 0x878787 });
-    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -Math.PI / 2;
-    this._scene.add(plane);
-    // * 평면은 그림자를 받기만 함
-    plane.receiveShadow = true;
-
-    new GLTFLoader().load('../public/gltf/character.glb', (gltf) => {
-      const model = gltf.scene;
-      this._scene.add(model);
-
-      // * model은 그림자를 생성하기만 함
-      model.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.castShadow = true;
-        }
-      });
-
-      const animationClips = gltf.animations;
-      console.log(animationClips);
-      const mixer = new THREE.AnimationMixer(model);
-      const animationsMap = {};
-      animationClips.forEach((clip) => {
-        const name = clip.name;
-        console.log(name);
-        animationsMap[name] = mixer.clipAction(clip);
-      });
-
-      // ! play하기 위해서는 mixer 객체를 통해서 캐릭터의 애니메이션을
-      // ! 프레임마다 업데이트 해줘야 함
-      this._mixer = mixer;
-      this._animationMap = animationsMap;
-      this._currentAnimationAction = this._animationMap['idle'];
-      // * play
-      this._currentAnimationAction.play();
-
-      // * 캐릭터 바운딩 박스
-      const box = new THREE.Box3().setFromObject(model);
-      model.position.y = (box.max.y - box.min.y - 0.8) / 2;
-
-      // * 바운딩 박스 표시
-      const boxHelper = new THREE.BoxHelper(model);
-      this._scene.add(boxHelper);
-
-      // * 월드 좌표계 축 표시 helper
-      const axisHelper = new THREE.AxesHelper(200);
-      this._scene.add(axisHelper);
-
-      // 모델과 바운딩 박스 표시는 다른 메서드에서 사용해야 하므로 변수 설정
-      this._boxHelper = boxHelper;
-      this._model = model;
-    });
-  }
-
-  resize() {
-    const width = this._root.clientWidth;
-    const height = this._root.clientHeight;
-
-    this._camera.aspect = width / height;
-    this._camera.updateProjectionMatrix();
-
-    this._renderer.setSize(width, height);
-  }
-
-  render(time) {
-    this._renderer.render(this._scene, this._camera);
-    this.update(time);
-    requestAnimationFrame(this.render.bind(this));
-  }
-
   _previousDirectionOffset = 0;
 
   // * 눌러진 키에 따른 보정값
@@ -288,6 +315,11 @@ class App {
   _speed = 0;
   _maxSpeed = 0;
   _acceleration = 0;
+
+  // 충돌 검사를 위한 코드, false = 캐릭터가 허공에 있음
+  _bOnTheGround = false;
+  _fallingAcceleration = 0;
+  _fallingSpeed = 0;
 
   update(time) {
     time *= 0.001; // ms(밀리세컨드) => s(세컨드) 변환
@@ -333,7 +365,9 @@ class App {
       const walkDirection = new THREE.Vector3();
       this._camera.getWorldDirection(walkDirection);
 
-      walkDirection.y = 0; // 공중이나 아래로 가지 않도록
+      /* walkDirection.y = 0; */ // 공중이나 아래로 가지 않도록
+      // 충돌 검사: 공중에 있으면 밑으로 가도록 설정
+      walkDirection.y = this._bOnTheGround ? 0 : -1;
       walkDirection.normalize(); // 정규화
 
       // 키보드 입력에 대해 이동해야 할 방향각 만큼 회전
@@ -348,15 +382,72 @@ class App {
         this._speed -= this._acceleration * 2;
       }
 
+      // 캐릭터가 떨어지는 속도, 가속도 초기화
+      if (!this._bOnTheGround) {
+        this._fallingAcceleration += 1;
+        this._fallingSpeed += Math.pow(this._fallingAcceleration, 2);
+      } else {
+        this._fallingAcceleration = 0;
+        this._fallingSpeed = 0;
+      }
+
+      // 속도 vector
+      const velocity = new THREE.Vector3(
+        walkDirection.x * this._speed,
+        walkDirection.y * this._fallingSpeed,
+        walkDirection.z * this._speed
+      );
+
+      // deltatime에 따른 이동 거리를 구하기 위해
+      // velocity(3차원) vector3을 스칼라곱 진행.
+      const deltaPosition = velocity.clone().multiplyScalar(deltaTime);
+
       // 캐릭터 x, z 평면에서 이동할 변이 값을 델타 타임과 속도로 계산
-      const moveX = walkDirection.x * (this._speed * deltaTime);
-      const moveZ = walkDirection.z * (this._speed * deltaTime);
+      // const moveX = walkDirection.x * (this._speed * deltaTime);
+      // const moveZ = walkDirection.z * (this._speed * deltaTime);
 
-      this._model.position.x += moveX;
-      this._model.position.z += moveZ;
+      // this._model.position.x += moveX;
+      // this._model.position.z += moveZ;
 
-      this._camera.position.x += moveX;
-      this._camera.position.z += moveZ;
+      // * 캡슐이 먼저 이동하고 그 다음 바로 캐릭터가 이동하도록 만들기 위해
+      // * 다음과 같이 작성
+      this._model._capsule.translate(deltaPosition);
+      console.log(this._model._capsule);
+      const result = this._worldOctree.capsuleIntersect(this._model._capsule);
+      console.log(result);
+      // 캡슐 이동 if()문
+      if (result) {
+        // 충돌한 경우
+        this._model._capsule.translate(
+          result.normal.multiplyScalar(result.depth)
+        );
+        this._bOnTheGround = true;
+      } else {
+        // 충돌하지 않은 경우
+        this._bOnTheGround = false;
+      }
+
+      // 변경하기 전 위치 저장
+      const previousPosition = this._model.position.clone();
+      // 모델 캡슐 높이
+      const capsuleHeight =
+        this._model._capsule.end.y -
+        this._model._capsule.start.y +
+        this._model._capsule.radius * 2 -
+        0.8;
+
+      this._model.position.set(
+        this._model._capsule.start.x,
+        this._model._capsule.start.y -
+          this._model._capsule.radius +
+          capsuleHeight / 2,
+        this._model._capsule.start.z
+      );
+
+      // this._camera.position.x += moveX;
+      // this._camera.position.z += moveZ;
+      this._camera.position.x -= previousPosition.x - this._model.position.x;
+      this._camera.position.z -= previousPosition.z - this._model.position.z;
 
       // 캐릭터가 항상 카메라의 중심에 있도록 조정
       this._controls.target.set(
@@ -366,6 +457,22 @@ class App {
       );
     }
     this._previousTime = time;
+  }
+
+  render(time) {
+    this._renderer.render(this._scene, this._camera);
+    this.update(time);
+    requestAnimationFrame(this.render.bind(this));
+  }
+
+  resize() {
+    const width = this._root.clientWidth;
+    const height = this._root.clientHeight;
+
+    this._camera.aspect = width / height;
+    this._camera.updateProjectionMatrix();
+
+    this._renderer.setSize(width, height);
   }
 }
 
