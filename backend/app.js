@@ -2,8 +2,13 @@ import { createServer } from "http";
 import { readFileSync } from "fs";
 // * 정적 라우팅 예시
 createServer((req, res) => {
-  const staticRoute = (needFile, statusCodeNumber, contentType) => {
-    const readFile = readFileSync(needFile, "utf-8", (err) => {
+  const staticRoute = (
+    needFile,
+    statusCodeNumber,
+    contentType,
+    encoding = "utf-8"
+  ) => {
+    const readFile = readFileSync(needFile, encoding, (err) => {
       if (err) throw err;
     });
     res.writeHead(statusCodeNumber, { "Content-Type": contentType });
@@ -48,15 +53,20 @@ createServer((req, res) => {
         staticRoute(`${jsm}/math/Capsule.js`, 200, "text/javascript");
         break;
       case "/public/gltf/character.glb":
-        const readFile = readFileSync(
+        staticRoute(
           "../frontend/public/gltf/character.glb",
-          (err) => {
-            if (err) throw err;
-          }
+          200,
+          "model/gltf-binary",
+          ""
         );
-        res.writeHead(200, { "Content-Type": "model/gltf-binary" });
-        res.write(readFile);
-        res.end();
+        break;
+      case "/public/gltf/space.glb":
+        staticRoute(
+          "../frontend/public/gltf/space.glb",
+          200,
+          "model/gltf-binary",
+          ""
+        );
         break;
     }
   }
