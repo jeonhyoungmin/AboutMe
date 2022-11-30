@@ -123,6 +123,23 @@ class App {
 
     const loader = new GLTFLoader();
 
+    loader.load('../public/gltf/space.glb', (gltf) => {
+      const model = gltf.scene;
+      model.position.z = -10;
+
+      this._scene.add(model);
+      // this._worldOctree.fromGraphNode(model);
+
+      model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      this._setupOctree(model);
+    });
+
     loader.load('../public/gltf/character.glb', (gltf) => {
       const model = gltf.scene;
       this._scene.add(model);
@@ -187,21 +204,6 @@ class App {
       // this._scene.add(boxM);
 
       // this._worldOctree.fromGraphNode(boxM);
-    });
-
-    loader.load('../public/gltf/space.glb', (gltf) => {
-      const model = gltf.scene;
-
-      this._scene.add(model);
-
-      model.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-
-      this._setupOctree(model);
     });
   }
 
@@ -412,9 +414,8 @@ class App {
       // * 캡슐이 먼저 이동하고 그 다음 바로 캐릭터가 이동하도록 만들기 위해
       // * 다음과 같이 작성
       this._model._capsule.translate(deltaPosition);
-      console.log(this._model._capsule);
+      // console.log(this._model._capsule);
       const result = this._worldOctree.capsuleIntersect(this._model._capsule);
-      console.log(result);
       // 캡슐 이동 if()문
       if (result) {
         // 충돌한 경우
