@@ -1,5 +1,6 @@
 import { createServer } from "http";
 import { readFileSync } from "fs";
+import { url } from "inspector";
 // * 정적 라우팅 예시
 createServer((req, res) => {
   const staticRoute = (
@@ -17,10 +18,16 @@ createServer((req, res) => {
   };
 
   let jsm = "../frontend/node_modules/three/examples/jsm";
-
+  let jsmpath = "/node_modules/three/examples/jsm";
   if ((req.method = "GET")) {
     let url = req.url;
+    console.log(url);
     switch (url) {
+      case "/favicon.ico":
+        let favicon = readFileSync("../frontend/public/image/favicon.glb");
+        res.writeHead(200, { "Content-Type": "model/gltf-binary" });
+        res.end(favicon);
+        break;
       case "/":
         staticRoute("../frontend/src/index.html", 200, "text/html");
         break;
@@ -37,19 +44,19 @@ createServer((req, res) => {
           "text/javascript"
         );
         break;
-      case "/node_modules/three/examples/jsm/controls/OrbitControls.js":
+      case `${jsmpath}/controls/OrbitControls.js`:
         staticRoute(`${jsm}/controls/OrbitControls.js`, 200, "text/javascript");
         break;
-      case "/node_modules/three/examples/jsm/loaders/GLTFLoader.js":
+      case `${jsmpath}/loaders/GLTFLoader.js`:
         staticRoute(`${jsm}/loaders/GLTFLoader.js`, 200, "text/javascript");
         break;
-      case "/node_modules/three/examples/jsm/libs/stats.module.js":
+      case `${jsmpath}/libs/stats.module.js`:
         staticRoute(`${jsm}/libs/stats.module.js`, 200, "text/javascript");
         break;
-      case "/node_modules/three/examples/jsm/math/Octree.js":
+      case `${jsmpath}/math/Octree.js`:
         staticRoute(`${jsm}/math/Octree.js`, 200, "text/javascript");
         break;
-      case "/node_modules/three/examples/jsm/math/Capsule.js":
+      case `${jsmpath}/math/Capsule.js`:
         staticRoute(`${jsm}/math/Capsule.js`, 200, "text/javascript");
         break;
       case "/public/gltf/character.glb":
