@@ -21,6 +21,7 @@ class App {
     renderer.shadowMap.type = THREE.VSMShadowMap;
 
     this._renderer = renderer;
+    console.log(this.render.bind(this));
 
     const scene = new THREE.Scene();
     this._scene = scene;
@@ -32,6 +33,10 @@ class App {
     this._setupControls();
 
     window.onresize = this.resize.bind(this);
+    console.dir(this.resize.bind(this));
+    console.log(this.resize.bind(this));
+    console.dir(this);
+    console.log(this);
     this.resize();
 
     requestAnimationFrame(this.render.bind(this));
@@ -128,6 +133,7 @@ class App {
       model.position.z = -10;
 
       this._scene.add(model);
+      this._setupOctree(model);
       // this._worldOctree.fromGraphNode(model);
 
       model.traverse((child) => {
@@ -136,8 +142,6 @@ class App {
           child.receiveShadow = true;
         }
       });
-
-      this._setupOctree(model);
     });
 
     loader.load('../public/gltf/character.glb', (gltf) => {
