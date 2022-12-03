@@ -2,6 +2,9 @@ import { createServer } from "http";
 import { readFileSync } from "fs";
 import { url } from "inspector";
 // * 정적 라우팅 예시
+
+const port = 5000;
+
 createServer((req, res) => {
   const staticRoute = (
     needFile,
@@ -77,6 +80,6 @@ createServer((req, res) => {
         break;
     }
   }
-}).listen(5000, () => {
-  console.log("서버 가동");
+}).listen(port, () => {
+  console.log(`${port}에서 서버 가동 중`);
 });
