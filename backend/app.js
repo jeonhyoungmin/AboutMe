@@ -1,9 +1,8 @@
 import { createServer } from "http";
 import { readFileSync } from "fs";
-import { url } from "inspector";
 // * 정적 라우팅 예시
 
-const port = 5000;
+const port = 5500;
 
 createServer((req, res) => {
   const staticRoute = (
@@ -62,6 +61,24 @@ createServer((req, res) => {
       case `${jsmpath}/math/Capsule.js`:
         staticRoute(`${jsm}/math/Capsule.js`, 200, "text/javascript");
         break;
+      case `${jsmpath}/libs/FirstPersonControls.js`:
+        staticRoute(
+          `${jsm}/libs/FirstPersonControls.js`,
+          200,
+          "text/javascript",
+          ""
+        );
+        break;
+      // case `${jsmpath}/loaders/RGBELoader.js`:
+      //   staticRoute(`${jsm}/loaders/RGBELoader.js`, 200, "text/javascript");
+      //   break;
+      // case "/public/image/studio_garden_2k.hdr":
+      //   staticRoute(
+      //     "../frontend/public/image/studio_garden_2k.hdr",
+      //     200,
+      //     "image/vnd.radiance"
+      //   );
+      //   break;
       case "/public/gltf/character.glb":
         staticRoute(
           "../frontend/public/gltf/character.glb",
