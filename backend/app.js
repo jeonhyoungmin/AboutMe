@@ -26,8 +26,8 @@ createServer((req, res) => {
     console.log(url);
     switch (url) {
       case "/favicon.ico":
-        let favicon = readFileSync("../frontend/public/image/favicon.glb");
-        res.writeHead(200, { "Content-Type": "model/gltf-binary" });
+        let favicon = readFileSync("../frontend/public/image/favicon.png");
+        res.writeHead(200, { "Content-Type": "image/png" });
         res.end(favicon);
         break;
       case "/":
