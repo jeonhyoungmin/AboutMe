@@ -2,10 +2,20 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
+// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 // * 3차원 공간을 분할하는 자료구조: 3차원 공간을 효율적으로 분할하고 빠르게 충돌 검사를 할 수 있음
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Capsule } from 'three/examples/jsm/math/Capsule.js';
+
+const cameraValue = {
+  fov: 50,
+  near: 1,
+  far: 10000,
+  positionX: 0,
+  positionY: 100,
+  positionZ: 500,
+};
 
 class App {
   constructor() {
@@ -16,125 +26,132 @@ class App {
     renderer.setPixelRatio(window.devicePixelRatio);
     root.appendChild(renderer.domElement);
 
-    // * 그림자 추가 : 렌더러 처리
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.VSMShadowMap;
 
     this._renderer = renderer;
-    console.log(this.render.bind(this));
+    console.log(renderer);
 
     const scene = new THREE.Scene();
     this._scene = scene;
 
-    // this._setupOctree();
+    // this._setupOctree()
     this._setupCamera();
     this._setupLight();
     this._setupModel();
     this._setupControls();
+    this._setupBackground();
+
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      'https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg',
+      function (texture) {
+        scene.background = texture;
+      }
+    );
 
     window.onresize = this.resize.bind(this);
-    console.dir(this.resize.bind(this));
-    console.log(this.resize.bind(this));
-    console.dir(this);
-    console.log(this);
     this.resize();
 
     requestAnimationFrame(this.render.bind(this));
   }
 
-  _setupOctree(model) {
-    this._worldOctree = new Octree();
-    this._worldOctree.fromGraphNode(model);
+  _setupBackground() {
+    // console.log(this._scene);
+    // const loader = new THREE.TextureLoader();
+    // loader.load(
+    //   'https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg',
+    //   function (texture) {
+    //     scene.background = texture;
+    //   }
+    // );
   }
 
   _setupControls() {
     this._controls = new OrbitControls(this._camera, this._root);
-    // * model을 카메라 중앙으로 오도록 세팅
-    this._controls.target.set(0, 1, 0);
-    // * orbitcontrols의 shift 기능 제거
-    this._controls.enablePan = false;
-    // * 화면 회전 부드럽게
-    this._controls.enableDamping = true;
+    this._controls.target.set(0, 0, 0);
+    // this._controls.enablePan = false;
+    // this._controls.enableDamping = true;
 
-    // * 초당 fps 표시
     const stats = new Stats();
     this._root.appendChild(stats.dom);
     this._fps = stats;
 
-    // 무슨 키가 눌렸는지 확인
     this._pressedKeys = {};
 
-    document.addEventListener('keydown', (event) => {
-      this._pressedKeys[event.key.toLowerCase()] = true;
+    document.addEventListener('keydown', (e) => {
+      this._pressedKeys[e.key.toLowerCase()] = true;
       this._processAnimation();
     });
 
-    document.addEventListener('keyup', (event) => {
-      this._pressedKeys[event.key.toLowerCase()] = false;
+    document.addEventListener('keyup', (e) => {
+      this._pressedKeys[e.key.toLowerCase()] = false;
       this._processAnimation();
     });
   }
 
-  _processAnimation() {
-    const previousAnimationAction = this._currentAnimationAction;
+  _processAnimation() {}
 
-    if (
-      this._pressedKeys['w'] ||
-      this._pressedKeys['a'] ||
-      this._pressedKeys['s'] ||
-      this._pressedKeys['d']
-    ) {
-      if (this._pressedKeys['shift']) {
-        this._currentAnimationAction = this._animationMap['walk'];
-        // this._speed = 20;
-        this._maxSpeed = 20;
-        this._acceleration = 2;
-      } else {
-        this._currentAnimationAction = this._animationMap['walk'];
-        // this._speed = 5;
-        this._maxSpeed = 5;
-        this._acceleration = 1;
-      }
-    } else {
-      this._currentAnimationAction = this._animationMap['idle'];
-      this._speed = 0;
-      this._maxSpeed = 0;
-      this._acceleration = 0;
-    }
+  _setupLight() {
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    this._scene.add(ambientLight);
 
-    if (previousAnimationAction != this._currentAnimationAction) {
-      // 만약 이전 액션과 현재 액션이 동일하지 않으면
-      // 이전 액션은 0.5초에 걸쳐서 서서히 소멸
-      previousAnimationAction.fadeOut(0.5);
-      // 새롭게 지정된 애니메이션 액션은
-      // reset을 통해 첫 번째 프레임으로 설정하고
-      // 0.5초에 걸쳐서 서서히 들어나게 하고 플레이
-      this._currentAnimationAction.reset().fadeIn(0.5).play();
-    }
+    // this._addPointLight(1000, 300, 1000, 0xff0000);
+    // this._addPointLight(-1000, 300, 1000, 0xffff00);
+    // this._addPointLight(-1000, 300, -1000, 0x00ff00);
+    // this._addPointLight(1000, 300, -1000, 0x0000ff);
+
+    // const shadowLight = new THREE.DirectionalLight(0xf29886, 1);
+    const shadowLight = new THREE.DirectionalLight(0xffffff, 1);
+    shadowLight.position.set(-1000, 1500, 1000);
+    shadowLight.target.position.set(-2000, -1000, -1000);
+    const directionalLightHelper = new THREE.DirectionalLightHelper(
+      shadowLight,
+      10
+    );
+    this._scene.add(directionalLightHelper);
+
+    this._scene.add(shadowLight);
+    // this._scene.add(shadowLight.target);
+    console.log(shadowLight.target);
+
+    shadowLight.castShadow = true;
+    shadowLight.shadow.mapSize.width = 2000;
+    shadowLight.shadow.mapSize.height = 1000;
+    shadowLight.shadow.camera.top = shadowLight.shadow.camera.right = 4000;
+    shadowLight.shadow.camera.bottom = shadowLight.shadow.camera.let = -2000;
+    shadowLight.shadow.camera.near = 10;
+    shadowLight.shadow.camera.far = 3500;
+    shadowLight.shadow.radius = 5;
+    const shadowCameraHelper = new THREE.CameraHelper(
+      shadowLight.shadow.camera
+    );
+    this._scene.add(shadowCameraHelper);
+  }
+
+  _addPointLight(x, y, z, helperColor) {
+    const color = 0xffffff;
+    const intensity = 1.5;
+    const pointLight = new THREE.PointLight(color, intensity, 1000);
+    pointLight.position.set(x, y, z);
+    this._scene.add(pointLight);
+    const pointLightHelper = new THREE.PointLightHelper(
+      pointLight,
+      10,
+      helperColor
+    );
+    this._scene.add(pointLightHelper);
   }
 
   _setupModel() {
-    // * geometry 평면
-    // const planeGeometry = new THREE.PlaneGeometry(50, 50);
-    // const planeMaterial = new THREE.MeshPhongMaterial({ color: 0x878787 });
-    // const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    // plane.rotation.x = -Math.PI / 2;
-    // this._scene.add(plane);
-    // * 평면은 그림자를 받기만 함
-    // plane.receiveShadow = true;
-
-    // 충돌 검사를 위한 코드
-    // this._worldOctree.fromGraphNode(plane);
-
     const loader = new GLTFLoader();
 
     loader.load('../public/gltf/space.glb', (gltf) => {
       const model = gltf.scene;
-      model.position.z = -10;
+      model.position.x = 1800;
+      model.position.z = 1000;
 
       this._scene.add(model);
-      this._setupOctree(model);
-      // this._worldOctree.fromGraphNode(model);
 
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -146,9 +163,11 @@ class App {
 
     loader.load('../public/gltf/character.glb', (gltf) => {
       const model = gltf.scene;
+      model.position.x = 1800;
+      model.position.z = 1000;
+
       this._scene.add(model);
 
-      // * model은 그림자를 생성하기만 함
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           child.castShadow = true;
@@ -156,317 +175,62 @@ class App {
       });
 
       const animationClips = gltf.animations;
-      console.log(animationClips);
       const mixer = new THREE.AnimationMixer(model);
       const animationsMap = {};
       animationClips.forEach((clip) => {
         const name = clip.name;
-        console.log(name);
         animationsMap[name] = mixer.clipAction(clip);
       });
 
-      // ! play하기 위해서는 mixer 객체를 통해서 캐릭터의 애니메이션을
-      // ! 프레임마다 업데이트 해줘야 함
       this._mixer = mixer;
       this._animationMap = animationsMap;
       this._currentAnimationAction = this._animationMap['idle'];
-      // * play
       this._currentAnimationAction.play();
 
-      // * 캐릭터 바운딩 박스
       const box = new THREE.Box3().setFromObject(model);
-      model.position.y = (box.max.y - box.min.y - 0.8) / 2;
+      // model.position.y = (box.max.y - box.min.y) / 2;
 
-      // 캡슐화를 위한 캐릭터의 높이 값과 지름 값 가져오기
       const height = box.max.y - box.min.y;
       const diameter = box.max.z - box.min.z;
-
-      // * 캡슐화
+      console.log(height);
+      console.log(diameter);
       model._capsule = new Capsule(
-        new THREE.Vector3(0, diameter / 2, 0),
-        new THREE.Vector3(0, height - diameter / 2, 0),
-        diameter / 2
+        new THREE.Vector3(0, 90.9 / 2, 0),
+        new THREE.Vector3(0, 259 - 90.9 / 2, 0),
+        90.9 / 2
       );
+      console.log(model._capsule);
 
-      // * 바운딩 박스 표시
       const boxHelper = new THREE.BoxHelper(model);
-      this._scene.add(boxHelper);
+      // this._scene.add(boxHelper);
 
-      // * 월드 좌표계 축 표시 helper
-      const axisHelper = new THREE.AxesHelper(200);
+      const axisHelper = new THREE.AxesHelper(10000);
       this._scene.add(axisHelper);
 
-      // 모델과 바운딩 박스 표시는 다른 메서드에서 사용해야 하므로 변수 설정
-      this._boxHelper = boxHelper;
+      this._boxHepler = boxHelper;
       this._model = model;
-
-      // const boxG = new THREE.BoxGeometry(10, diameter, 10);
-      // const boxM = new THREE.Mesh(boxG, planeMaterial);
-      // boxM.receiveShadow = true;
-      // boxM.castShadow = true;
-      // boxM.position.set(15, 0, 0);
-      // this._scene.add(boxM);
-
-      // this._worldOctree.fromGraphNode(boxM);
     });
   }
 
   _setupCamera() {
     const width = this._root.clientWidth;
     const height = this._root.clientHeight;
-    const camera = new THREE.PerspectiveCamera(5, width / height, 0.1, 20000);
-    camera.position.set(0, 2, 40);
+    const camera = new THREE.PerspectiveCamera(
+      cameraValue.fov,
+      width / height,
+      cameraValue.near,
+      cameraValue.far
+    );
+    camera.position.set(
+      cameraValue.positionX,
+      cameraValue.positionY,
+      cameraValue.positionZ
+    );
     this._camera = camera;
   }
 
-  _addPointLight(x, y, z, helperColor) {
-    const color = 0xffffff;
-    const intensity = 1.5;
-
-    const pointLight = new THREE.PointLight(color, intensity, 1000);
-    pointLight.position.set(x, y, z);
-
-    this._scene.add(pointLight);
-
-    const pointLightHelper = new THREE.PointLightHelper(
-      pointLight,
-      10,
-      helperColor
-    );
-    this._scene.add(pointLightHelper);
-  }
-
-  _setupLight() {
-    // * 기본 설정 light
-    // const color = 0xffffff;
-    // const intensity = 2;
-    // const light = new THREE.DirectionalLight(color, intensity);
-    // light.position.set(0, 0, 1);
-    // this._scene.add(light);
-
-    // * 주변광
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    this._scene.add(ambientLight);
-
-    this._addPointLight(100, 30, 100, 0xff0000);
-    this._addPointLight(-100, 30, 100, 0xffff00);
-    this._addPointLight(-100, 30, -100, 0x00ff00);
-    this._addPointLight(100, 30, -100, 0x0000ff);
-
-    // * 그림자 생성을 위한 directional light
-    const shadowLight = new THREE.DirectionalLight(0xffffff, 0.1);
-    shadowLight.position.set(100, 100, 100);
-    shadowLight.target.position.set(0, 0, 0);
-    const directionalLightHelper = new THREE.DirectionalLightHelper(
-      shadowLight,
-      10
-    );
-    this._scene.add(directionalLightHelper);
-
-    this._scene.add(shadowLight);
-    this._scene.add(shadowLight.target);
-
-    // * 그림자를 위한 광원 처리
-    shadowLight.castShadow = true;
-    shadowLight.shadow.mapSize.width = 1024;
-    shadowLight.shadow.mapSize.height = 1024;
-    shadowLight.shadow.camera.top = shadowLight.shadow.camera.right = 700;
-    shadowLight.shadow.camera.bottom = shadowLight.shadow.camera.left = -700;
-    shadowLight.shadow.camera.near = 100;
-    shadowLight.shadow.camera.far = 900;
-    shadowLight.shadow.radius = 5;
-    const shadowCameraHelper = new THREE.CameraHelper(
-      shadowLight.shadow.camera
-    );
-    this._scene.add(shadowCameraHelper);
-  }
-
-  _previousDirectionOffset = 0;
-
-  // * 눌러진 키에 따른 보정값
-  _directionOffset() {
-    const pressedKeys = this._pressedKeys;
-    let directionOffset = 0; // w키
-
-    if (pressedKeys['w']) {
-      if (pressedKeys['a']) {
-        directionOffset = Math.PI / 4; // w+a (45도)
-      } else if (pressedKeys['d']) {
-        directionOffset = -Math.PI / 4; // w+d (-45도)
-      }
-    } else if (pressedKeys['s']) {
-      if (pressedKeys['a']) {
-        directionOffset = Math.PI / 4 + Math.PI / 2; // s+a (135도)
-      } else if (pressedKeys['d']) {
-        directionOffset = -Math.PI / 4 - Math.PI / 2; // s+d (-135도)
-      } else {
-        directionOffset = Math.PI; // s (180도)
-      }
-    } else if (pressedKeys['a']) {
-      directionOffset = Math.PI / 2; // a (90도)
-    } else if (pressedKeys['d']) {
-      directionOffset = -Math.PI / 2; // d (-90도)
-    } else {
-      directionOffset = this._previousDirectionOffset;
-    }
-    // * 마지막으로 눌린 방향으로 캐릭터의 시선 고정
-    // * 아무것도 눌리기 전에는 directionOffset = 0(previousDirectionOffset)이였다가
-    this._previousDirectionOffset = directionOffset;
-    // * 다른 키가 눌린 뒤에는 그 눌린 키의 방향이 previousDirectionOffset이 됨
-
-    return directionOffset;
-  }
-
-  // 캐릭터 이동 초기 값
-  _speed = 0;
-  _maxSpeed = 0;
-  _acceleration = 0;
-
-  // 충돌 검사를 위한 코드, false = 캐릭터가 허공에 있음
-  _bOnTheGround = false;
-  _fallingAcceleration = 0;
-  _fallingSpeed = 0;
-
-  update(time) {
-    time *= 0.001; // ms(밀리세컨드) => s(세컨드) 변환
-    this._controls.update();
-
-    // * model의 이동에 따라 업데이트
-    if (this._boxHelper) {
-      this._boxHelper.update();
-    }
-
-    this._fps.update();
-
-    if (this._mixer) {
-      // * deltaTime = 현재 시간 - 이전 시간
-      const deltaTime = time - this._previousTime;
-      this._mixer.update(deltaTime);
-
-      const angleCameraDirectionAxisY =
-        Math.atan2(
-          this._camera.position.x - this._model.position.x,
-          this._camera.position.z - this._model.position.z
-        ) + Math.PI;
-
-      // angleCameraDirectionAxisY 값 만큼 캐릭터 회전
-      // 회전을 위해 quaternion 사용
-      const rotateQuarternion = new THREE.Quaternion();
-      rotateQuarternion.setFromAxisAngle(
-        // y축에 대해서 angleCameraDirectionAxisY 만큼 회전
-        new THREE.Vector3(0, 1, 0),
-        angleCameraDirectionAxisY + this._directionOffset()
-        // wasd 키를 눌렀을 때, 해당 방향을 바라보기 위해서는
-        // angleCameraDirectionAxisY + ? (값 보정 필요)
-        // 보정값은 notion 이미지 참고
-      );
-
-      // rotateQuarternion로 캐릭터를 회전시키는 코드
-      this._model.quaternion.rotateTowards(
-        rotateQuarternion,
-        THREE.MathUtils.degToRad(5)
-        // 한 번에 회전시키는 것이 아닌, '5'도씩 단계적으로 회전
-      );
-
-      const walkDirection = new THREE.Vector3();
-      this._camera.getWorldDirection(walkDirection);
-
-      /* walkDirection.y = 0; */ // 공중이나 아래로 가지 않도록
-      // 충돌 검사: 공중에 있으면 밑으로 가도록 설정
-      walkDirection.y = this._bOnTheGround ? 0 : -1;
-      walkDirection.normalize(); // 정규화
-
-      // 키보드 입력에 대해 이동해야 할 방향각 만큼 회전
-      walkDirection.applyAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        this._directionOffset()
-      );
-
-      if (this._speed < this._maxSpeed) {
-        this._speed += this._acceleration;
-      } else {
-        this._speed -= this._acceleration * 2;
-      }
-
-      // 캐릭터가 떨어지는 속도, 가속도 초기화
-      if (!this._bOnTheGround) {
-        this._fallingAcceleration += 1;
-        this._fallingSpeed += Math.pow(this._fallingAcceleration, 2);
-      } else {
-        this._fallingAcceleration = 0;
-        this._fallingSpeed = 0;
-      }
-
-      // 속도 vector
-      const velocity = new THREE.Vector3(
-        walkDirection.x * this._speed,
-        walkDirection.y * this._fallingSpeed,
-        walkDirection.z * this._speed
-      );
-
-      // deltatime에 따른 이동 거리를 구하기 위해
-      // velocity(3차원) vector3을 스칼라곱 진행.
-      const deltaPosition = velocity.clone().multiplyScalar(deltaTime);
-
-      // 캐릭터 x, z 평면에서 이동할 변이 값을 델타 타임과 속도로 계산
-      // const moveX = walkDirection.x * (this._speed * deltaTime);
-      // const moveZ = walkDirection.z * (this._speed * deltaTime);
-
-      // this._model.position.x += moveX;
-      // this._model.position.z += moveZ;
-
-      // * 캡슐이 먼저 이동하고 그 다음 바로 캐릭터가 이동하도록 만들기 위해
-      // * 다음과 같이 작성
-      this._model._capsule.translate(deltaPosition);
-      // console.log(this._model._capsule);
-      const result = this._worldOctree.capsuleIntersect(this._model._capsule);
-      // 캡슐 이동 if()문
-      if (result) {
-        // 충돌한 경우
-        this._model._capsule.translate(
-          result.normal.multiplyScalar(result.depth)
-        );
-        this._bOnTheGround = true;
-      } else {
-        // 충돌하지 않은 경우
-        this._bOnTheGround = false;
-      }
-
-      // 변경하기 전 위치 저장
-      const previousPosition = this._model.position.clone();
-      // 모델 캡슐 높이
-      const capsuleHeight =
-        this._model._capsule.end.y -
-        this._model._capsule.start.y +
-        this._model._capsule.radius * 2 -
-        0.8;
-
-      this._model.position.set(
-        this._model._capsule.start.x,
-        this._model._capsule.start.y -
-          this._model._capsule.radius +
-          capsuleHeight / 2,
-        this._model._capsule.start.z
-      );
-
-      // this._camera.position.x += moveX;
-      // this._camera.position.z += moveZ;
-      this._camera.position.x -= previousPosition.x - this._model.position.x;
-      this._camera.position.z -= previousPosition.z - this._model.position.z;
-
-      // 캐릭터가 항상 카메라의 중심에 있도록 조정
-      this._controls.target.set(
-        this._model.position.x,
-        this._model.position.y + 1,
-        this._model.position.z
-      );
-    }
-    this._previousTime = time;
-  }
-
-  render(time) {
+  render() {
     this._renderer.render(this._scene, this._camera);
-    this.update(time);
     requestAnimationFrame(this.render.bind(this));
   }
 
