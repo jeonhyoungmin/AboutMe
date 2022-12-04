@@ -3,12 +3,11 @@ import { readFileSync } from "fs";
 // * 정적 라우팅 예시
 
 const port = 5500;
-
 createServer((req, res) => {
   const staticRoute = (
     needFile,
     statusCodeNumber,
-    contentType,
+    contentType = "text/javascript",
     encoding = "utf-8"
   ) => {
     const readFile = readFileSync(needFile, encoding, (err) => {
@@ -19,81 +18,31 @@ createServer((req, res) => {
     res.end();
   };
 
-  let jsm = "../frontend/node_modules/three/examples/jsm";
-  let jsmpath = "/node_modules/three/examples/jsm";
   if ((req.method = "GET")) {
     let url = req.url;
-    console.log(url);
     switch (url) {
       case "/favicon.ico":
-        let favicon = readFileSync("../frontend/public/image/favicon.png");
-        res.writeHead(200, { "Content-Type": "image/png" });
-        res.end(favicon);
+        staticRoute(
+          "../frontend/public/image/favicon.png",
+          200,
+          "image/png",
+          ""
+        );
         break;
       case "/":
         staticRoute("../frontend/src/index.html", 200, "text/html");
         break;
-      case "/index.css":
-        staticRoute("../frontend/src/index.css", 200, "text/css");
+      case url.endsWith("css") ? url : "":
+        staticRoute(`../frontend/src${url}`, 200, "text/css");
         break;
       case "/index.js":
-        staticRoute("../frontend/src/index.js", 200, "text/javascript");
+        staticRoute(`../frontend/src${url}`, 200);
         break;
-      case "/node_modules/three/build/three.module.js":
-        staticRoute(
-          "../frontend/node_modules/three/build/three.module.js",
-          200,
-          "text/javascript"
-        );
+      case url.startsWith("/node_modules") ? url : "":
+        staticRoute(`../frontend${url}`, 200);
         break;
-      case `${jsmpath}/controls/OrbitControls.js`:
-        staticRoute(`${jsm}/controls/OrbitControls.js`, 200, "text/javascript");
-        break;
-      case `${jsmpath}/loaders/GLTFLoader.js`:
-        staticRoute(`${jsm}/loaders/GLTFLoader.js`, 200, "text/javascript");
-        break;
-      case `${jsmpath}/libs/stats.module.js`:
-        staticRoute(`${jsm}/libs/stats.module.js`, 200, "text/javascript");
-        break;
-      case `${jsmpath}/math/Octree.js`:
-        staticRoute(`${jsm}/math/Octree.js`, 200, "text/javascript");
-        break;
-      case `${jsmpath}/math/Capsule.js`:
-        staticRoute(`${jsm}/math/Capsule.js`, 200, "text/javascript");
-        break;
-      case `${jsmpath}/libs/FirstPersonControls.js`:
-        staticRoute(
-          `${jsm}/libs/FirstPersonControls.js`,
-          200,
-          "text/javascript",
-          ""
-        );
-        break;
-      // case `${jsmpath}/loaders/RGBELoader.js`:
-      //   staticRoute(`${jsm}/loaders/RGBELoader.js`, 200, "text/javascript");
-      //   break;
-      // case "/public/image/studio_garden_2k.hdr":
-      //   staticRoute(
-      //     "../frontend/public/image/studio_garden_2k.hdr",
-      //     200,
-      //     "image/vnd.radiance"
-      //   );
-      //   break;
-      case "/public/gltf/character.glb":
-        staticRoute(
-          "../frontend/public/gltf/character.glb",
-          200,
-          "model/gltf-binary",
-          ""
-        );
-        break;
-      case "/public/gltf/space.glb":
-        staticRoute(
-          "../frontend/public/gltf/space.glb",
-          200,
-          "model/gltf-binary",
-          ""
-        );
+      case url.startsWith("/public/gltf") ? url : "":
+        staticRoute(`../frontend${url}`, 200, "model/gltf-binary", "");
         break;
     }
   }
