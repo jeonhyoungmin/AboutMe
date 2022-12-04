@@ -60,10 +60,16 @@ class App {
   }
 
   _setupControls() {
-    this._controls = new OrbitControls(this._camera, this._root);
-    this._controls.target.set(0, 1, 0);
+    // this._controls = new OrbitControls(this._camera, this._root);
+    // this._controls.target.set(0, 1, 0);
     // this._controls.enablePan = false;
     // this._controls.enableDamping = true;
+    this._controls = new FirstPersonControls(
+      this._camera,
+      this._renderer.domElement
+    );
+    this._controls.lookSpeed = 0.8;
+    this._controls.movementSpeed = 5;
 
     const stats = new Stats();
     this._root.appendChild(stats.dom);
@@ -430,14 +436,14 @@ class App {
         this._model._capsule.start.z
       );
 
-      this._camera.position.x -= previousPosition.x - this._model.position.x;
-      this._camera.position.z -= previousPosition.z - this._model.position.z;
+      // this._camera.position.x -= previousPosition.x - this._model.position.x;
+      // this._camera.position.z -= previousPosition.z - this._model.position.z;
 
-      this._controls.target.set(
-        this._model.position.x,
-        this._model.position.y + 200,
-        this._model.position.z
-      );
+      // this._controls.target.set(
+      //   this._model.position.x,
+      //   this._model.position.y + 200,
+      //   this._model.position.z
+      // );
     }
     this._previousTime = time;
   }
