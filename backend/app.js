@@ -20,6 +20,7 @@ createServer((req, res) => {
 
   if ((req.method = "GET")) {
     let url = req.url;
+    console.log(url);
     switch (url) {
       case "/favicon.ico":
         staticRoute(
@@ -36,6 +37,9 @@ createServer((req, res) => {
         staticRoute(`../frontend/src${url}`, 200, "text/css");
         break;
       case "/index.js":
+        staticRoute(`../frontend/src${url}`, 200);
+        break;
+      case "/value.js":
         staticRoute(`../frontend/src${url}`, 200);
         break;
       case url.startsWith("/node_modules") ? url : "":
