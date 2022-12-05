@@ -122,6 +122,22 @@ class App {
     // this._worldOctree.fromGraphNode(plane);
 
     const loader = new GLTFLoader();
+    loader.load('../public/gltf/space.glb', (gltf) => {
+      const model = gltf.scene;
+
+      this._scene.add(model);
+
+      model.position.z = -10;
+
+      model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      this._setupOctree(model);
+    });
 
     loader.load('../public/gltf/character.glb', (gltf) => {
       const model = gltf.scene;
@@ -187,21 +203,6 @@ class App {
       // this._scene.add(boxM);
 
       // this._worldOctree.fromGraphNode(boxM);
-    });
-
-    loader.load('../public/gltf/space.glb', (gltf) => {
-      const model = gltf.scene;
-
-      this._scene.add(model);
-
-      model.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-
-      this._setupOctree(model);
     });
   }
 
