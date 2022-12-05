@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import { readFileSync } from "fs";
-import { url } from "inspector";
+
 // * 정적 라우팅 예시
 createServer((req, res) => {
   const staticRoute = (

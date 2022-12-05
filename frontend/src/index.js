@@ -139,23 +139,6 @@ class App {
       this._setupOctree(model);
     });
 
-    loader.load('../public/gltf/space.glb', (gltf) => {
-      const model = gltf.scene;
-      model.position.z = -10;
-
-      this._scene.add(model);
-      // this._worldOctree.fromGraphNode(model);
-
-      model.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-
-      this._setupOctree(model);
-    });
-
     loader.load('../public/gltf/character.glb', (gltf) => {
       const model = gltf.scene;
       this._scene.add(model);
