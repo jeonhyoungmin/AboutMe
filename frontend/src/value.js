@@ -3,8 +3,8 @@ const cameraValue = {
   near: 0.1,
   far: 10000,
   positionX: 0,
-  positionY: 200,
-  positionZ: -500,
+  positionY: 300,
+  positionZ: 100,
 };
 
 const ambientLightValue = {
