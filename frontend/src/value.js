@@ -4,7 +4,7 @@ const cameraValue = {
   far: 10000,
   positionX: 0,
   positionY: 300,
-  positionZ: 100,
+  positionZ: -100,
 };
 
 const ambientLightValue = {
