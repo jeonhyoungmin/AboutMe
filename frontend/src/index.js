@@ -94,12 +94,12 @@ class App {
     ) {
       if (this._pressedKeys['shift']) {
         this._currentAnimationAction = this._animationMap['walk'];
-        this._maxSpeed = 700;
-        this._acceleration = 250;
+        this._maxSpeed = 150;
+        this._acceleration = 50;
       } else {
         this._currentAnimationAction = this._animationMap['walk'];
-        this._maxSpeed = 500;
-        this._acceleration = 150;
+        this._maxSpeed = 100;
+        this._acceleration = 25;
       }
     } else {
       this._currentAnimationAction = this._animationMap['idle'];
@@ -117,7 +117,7 @@ class App {
   _setupModel() {
     const loader = new GLTFLoader();
 
-    loader.load('../public/gltf/space.glb', (gltf) => {
+    loader.load('../public/gltf/space-1.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = spaceValue.positionX;
       model.position.y = spaceValue.positionY;
@@ -135,7 +135,7 @@ class App {
       this._setupOctree(model);
     });
 
-    loader.load('../public/gltf/character.glb', (gltf) => {
+    loader.load('../public/gltf/character-1.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = characterValue.positionX;
       model.position.y = characterValue.positionY;
@@ -174,8 +174,8 @@ class App {
       //   diameter / 2
       // );
 
-      const height = 259;
-      const diameter = 90.9;
+      const height = 16.1;
+      const diameter = 5.66;
 
       model._capsule = new Capsule(
         new THREE.Vector3(0, diameter / 2, 0),
@@ -427,7 +427,7 @@ class App {
 
       this._model.position.set(
         this._model._capsule.start.x,
-        this._model._capsule.start.y - this._model._capsule.radius + 13,
+        this._model._capsule.start.y - this._model._capsule.radius,
         this._model._capsule.start.z
       );
 
@@ -436,7 +436,7 @@ class App {
 
       this._controls.target.set(
         this._model.position.x,
-        this._model.position.y + 250,
+        this._model.position.y + 10,
         this._model.position.z
       );
     }
