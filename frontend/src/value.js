@@ -1,10 +1,10 @@
 const cameraValue = {
-  fov: 60,
+  fov: 50,
   near: 0.1,
   far: 10000,
   positionX: 0,
-  positionY: 50,
-  positionZ: -50,
+  positionY: 15,
+  positionZ: -20,
 };
 
 const ambientLightValue = {
@@ -56,6 +56,10 @@ const characterValue = {
   capsuleEnd: 259 - 90.9 / 2,
   capsuleRadius: 90.9 / 2,
   axisHelper: 10000,
+  maxRunSpeed: 100,
+  maxRunAcceleration: 50,
+  maxSpeed: 50,
+  maxAcceleration: 25,
 };
 
 export {

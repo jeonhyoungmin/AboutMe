@@ -43,15 +43,32 @@ class App {
       }
     );
 
+    this._setupModel();
     this._setupCamera();
     this._setupLight();
-    this._setupModel();
     this._setupControls();
+    this._setupRaycaster();
 
     window.onresize = this.resize.bind(this);
     this.resize();
 
     requestAnimationFrame(this.render.bind(this));
+  }
+
+  _setupRaycaster() {
+    const raycaster = new THREE.Raycaster();
+    const found = raycaster.intersectObjects(this._scene.children);
+    window.addEventListener('click', (e) => {
+      const pointer = new THREE.Vector2();
+      pointer.x = (e.clientX / this._root.clientWidth) * 2 - 1;
+      pointer.y = (e.clientY / this._root.clientHeight) * 2 + 1;
+      console.log(pointer);
+
+      raycaster.setFromCamera(pointer, this._camera);
+      // console.log(raycaster);
+    });
+    // console.log(this._scene);
+    // console.log(this._papar);
   }
 
   _setupOctree(model) {
@@ -94,12 +111,12 @@ class App {
     ) {
       if (this._pressedKeys['shift']) {
         this._currentAnimationAction = this._animationMap['walk'];
-        this._maxSpeed = 150;
-        this._acceleration = 50;
+        this._maxSpeed = characterValue.maxRunSpeed;
+        this._acceleration = characterValue.maxRunAcceleration;
       } else {
         this._currentAnimationAction = this._animationMap['walk'];
-        this._maxSpeed = 100;
-        this._acceleration = 25;
+        this._maxSpeed = characterValue.maxSpeed;
+        this._acceleration = characterValue.maxAcceleration;
       }
     } else {
       this._currentAnimationAction = this._animationMap['idle'];
@@ -135,6 +152,29 @@ class App {
       this._setupOctree(model);
     });
 
+    loader.load('../public/gltf/paper.glb', (gltf) => {
+      const paper = gltf.scene;
+      paper.name = 'paper';
+
+      this._scene.add(paper);
+
+      console.log(paper);
+      // window.addEventListener('click', (e) => {
+      //   // if (e.clientX === paper.x) {
+      //   // console.log('he');
+      //   // }
+      //   console.log(e);
+      // });
+
+      paper.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+      return paper;
+    });
+
     loader.load('../public/gltf/character-1.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = characterValue.positionX;
@@ -154,7 +194,7 @@ class App {
       const animationsMap = {};
       animationClips.forEach((clip) => {
         const name = clip.name;
-        console.log(name);
+        // console.log(name);
         animationsMap[name] = mixer.clipAction(clip);
       });
 
@@ -175,7 +215,7 @@ class App {
       // );
 
       const height = 16.1;
-      const diameter = 5.66;
+      const diameter = 6;
 
       model._capsule = new Capsule(
         new THREE.Vector3(0, diameter / 2, 0),
@@ -290,26 +330,26 @@ class App {
 
   _directionOffset() {
     const pressedKeys = this._pressedKeys;
-    let directionOffset = 0; // w키
+    let directionOffset = 0;
 
     if (pressedKeys['w']) {
       if (pressedKeys['a']) {
-        directionOffset = Math.PI / 4; // w+a (45도)
+        directionOffset = Math.PI / 4;
       } else if (pressedKeys['d']) {
-        directionOffset = -Math.PI / 4; // w+d (-45도)
+        directionOffset = -Math.PI / 4;
       }
     } else if (pressedKeys['s']) {
       if (pressedKeys['a']) {
-        directionOffset = Math.PI / 4 + Math.PI / 2; // s+a (135도)
+        directionOffset = Math.PI / 4 + Math.PI / 2;
       } else if (pressedKeys['d']) {
-        directionOffset = -Math.PI / 4 - Math.PI / 2; // s+d (-135도)
+        directionOffset = -Math.PI / 4 - Math.PI / 2;
       } else {
-        directionOffset = Math.PI; // s (180도)
+        directionOffset = Math.PI;
       }
     } else if (pressedKeys['a']) {
-      directionOffset = Math.PI / 2; // a (90도)
+      directionOffset = Math.PI / 2;
     } else if (pressedKeys['d']) {
-      directionOffset = -Math.PI / 2; // d (-90도)
+      directionOffset = -Math.PI / 2;
     } else {
       directionOffset = this._previousDirectionOffset;
     }
@@ -368,7 +408,7 @@ class App {
       this._camera.getWorldDirection(walkDirection);
 
       walkDirection.y = this._bOnTheGround ? 0 : -1;
-      walkDirection.normalize(); // 정규화
+      walkDirection.normalize();
 
       // 키보드 입력에 대해 이동해야 할 방향각 만큼 회전
       walkDirection.applyAxisAngle(
@@ -382,7 +422,6 @@ class App {
         this._speed -= this._acceleration * 2;
       }
 
-      // 캐릭터가 떨어지는 속도, 가속도 초기화
       if (!this._bOnTheGround) {
         this._fallingAcceleration += 1;
         this._fallingSpeed += Math.pow(this._fallingAcceleration, 2);
@@ -391,7 +430,6 @@ class App {
         this._fallingSpeed = 0;
       }
 
-      // 속도 vector
       const velocity = new THREE.Vector3(
         walkDirection.x * this._speed,
         walkDirection.y * this._fallingSpeed,
@@ -436,7 +474,7 @@ class App {
 
       this._controls.target.set(
         this._model.position.x,
-        this._model.position.y + 10,
+        this._model.position.y + 17,
         this._model.position.z
       );
     }
