@@ -64,7 +64,7 @@ class App {
     this._controls.target.set(0, 1, 0);
     this._controls.enablePan = false;
     this._controls.enableDamping = true;
-    this._controls.enableZoom = false;
+    // this._controls.enableZoom = false;
 
     const stats = new Stats();
     this._root.appendChild(stats.dom);
@@ -94,12 +94,12 @@ class App {
     ) {
       if (this._pressedKeys['shift']) {
         this._currentAnimationAction = this._animationMap['walk'];
-        this._maxSpeed = 500;
-        this._acceleration = 100;
+        this._maxSpeed = 700;
+        this._acceleration = 250;
       } else {
         this._currentAnimationAction = this._animationMap['walk'];
-        this._maxSpeed = 300;
-        this._acceleration = 100;
+        this._maxSpeed = 500;
+        this._acceleration = 150;
       }
     } else {
       this._currentAnimationAction = this._animationMap['idle'];
