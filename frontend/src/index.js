@@ -17,7 +17,6 @@ import {
   spaceValue,
   characterValue,
 } from './value.js';
-import { Group } from 'three';
 
 class App {
   constructor() {
@@ -56,7 +55,7 @@ class App {
     setTimeout(() => {
       this._setupRaycaster();
       console.log(Group.children[1].name);
-    }, 1000);
+    }, 200);
     window.onresize = this.resize.bind(this);
     this.resize();
 
@@ -67,25 +66,57 @@ class App {
     const raycaster = new THREE.Raycaster();
     const found = raycaster.intersectObjects(this._scene.children);
     const pointer = new THREE.Vector2();
-    // console.dir(found);
-    const objectPosition = new THREE.Vector3();
+    const intersects = raycaster.intersectObjects(this._scene.children);
+    this._pointer = pointer;
     window.addEventListener('click', (e) => {
-      // pointer.x = (e.clientX / this._root.clientWidth) * 2 - 1;
-      // pointer.y = (e.clientY / this._root.clientHeight) * 2 + 1;
+      // pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+      // pointer.y = (e.clientY / window.innerHeight) * 2 + 1;
       // console.log(raycaster);
       // console.log(found);
       // console.log(this._Group.children[1]);
-      this._Group.children[1].position.x += 1;
+      // this._Group.children[1].position.x += 1;
       // if (this._Group.children[1].name === 'paper') {
       // }
-      objectPosition.x = this._Group.children[1].position.x;
-      objectPosition.y = this._Group.children[1].position.y;
-      objectPosition.z = this._Group.children[1].position.z;
-      console.log(objectPosition);
+      // objectPosition.x = this._Group.children[1].position.x;
+      // objectPosition.y = this._Group.children[1].position.y;
+      // objectPosition.z = this._Group.children[1].position.z;
+      // console.log(objectPosition);
+      // raycaster.setFromCamera(pointer, this._camera);
+      // console.log(raycaster);
+      //   if (this._Group.children[1].name === 'paper') {
+      //     console.log('hi');
+      //   }
+      this._root.addEventListener(
+        'mousemove',
+        this._onDocumentMouseMove(e),
+        false
+      );
+      this._root.addEventListener(
+        'mousedown',
+        this._onDocumentMouseDown(e),
+        false
+      );
+      raycaster.setFromCamera(this._pointer, this._camera);
+      console.log(intersects.length);
+      console.log(raycaster);
     });
-    raycaster.setFromCamera(pointer, this._camera);
-    // console.log(this._scene);
-    // console.log(this._papar);
+  }
+
+  _onDocumentMouseMove(event) {
+    event.preventDefault();
+    const gap1 = event.clientY - event.offsetY;
+    const gap2 = event.clientX - event.offsetX;
+    this._pointer.x = ((event.clientX - gap2) / window.innerWidth) * 2 - 1;
+    this._pointer.y = -((event.clientY - gap1) / window.innerHeight) * 2 + 1;
+    console.log(this._pointer);
+  }
+
+  _onDocumentMouseDown(event) {
+    // event.preventDefault();
+    // if (SELECTED) {
+    //   SELECTED.currentHex = 0x00ff00 * Math.random();
+    //   SELECTED.material.emissive.setHex(SELECTED.currentHex);
+    // }
   }
 
   _setupOctree(model) {
