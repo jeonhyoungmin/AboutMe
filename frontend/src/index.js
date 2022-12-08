@@ -17,6 +17,7 @@ import {
   spaceValue,
   characterValue,
 } from './value.js';
+import { Group } from 'three';
 
 class App {
   constructor() {
@@ -43,12 +44,19 @@ class App {
       }
     );
 
+    const Group = new THREE.Group();
+    this._Group = Group;
+
     this._setupModel();
     this._setupCamera();
     this._setupLight();
     this._setupControls();
-    this._setupRaycaster();
 
+    this._scene.add(this._Group);
+    setTimeout(() => {
+      this._setupRaycaster();
+      console.log(Group.children[1].name);
+    }, 1000);
     window.onresize = this.resize.bind(this);
     this.resize();
 
@@ -58,15 +66,24 @@ class App {
   _setupRaycaster() {
     const raycaster = new THREE.Raycaster();
     const found = raycaster.intersectObjects(this._scene.children);
+    const pointer = new THREE.Vector2();
+    // console.dir(found);
+    const objectPosition = new THREE.Vector3();
     window.addEventListener('click', (e) => {
-      const pointer = new THREE.Vector2();
-      pointer.x = (e.clientX / this._root.clientWidth) * 2 - 1;
-      pointer.y = (e.clientY / this._root.clientHeight) * 2 + 1;
-      console.log(pointer);
-
-      raycaster.setFromCamera(pointer, this._camera);
+      // pointer.x = (e.clientX / this._root.clientWidth) * 2 - 1;
+      // pointer.y = (e.clientY / this._root.clientHeight) * 2 + 1;
       // console.log(raycaster);
+      // console.log(found);
+      // console.log(this._Group.children[1]);
+      this._Group.children[1].position.x += 1;
+      // if (this._Group.children[1].name === 'paper') {
+      // }
+      objectPosition.x = this._Group.children[1].position.x;
+      objectPosition.y = this._Group.children[1].position.y;
+      objectPosition.z = this._Group.children[1].position.z;
+      console.log(objectPosition);
     });
+    raycaster.setFromCamera(pointer, this._camera);
     // console.log(this._scene);
     // console.log(this._papar);
   }
@@ -140,7 +157,7 @@ class App {
       model.position.y = spaceValue.positionY;
       model.position.z = spaceValue.positionZ;
 
-      this._scene.add(model);
+      this._Group.add(model);
 
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -156,14 +173,14 @@ class App {
       const paper = gltf.scene;
       paper.name = 'paper';
 
-      this._scene.add(paper);
+      this._Group.add(paper);
 
-      console.log(paper);
+      // console.log(paper);
       // window.addEventListener('click', (e) => {
       //   // if (e.clientX === paper.x) {
-      //   // console.log('he');
-      //   // }
       //   console.log(e);
+      //   // }
+      //   // console.log(e);
       // });
 
       paper.traverse((child) => {
@@ -172,7 +189,6 @@ class App {
           child.receiveShadow = true;
         }
       });
-      return paper;
     });
 
     loader.load('../public/gltf/character-1.glb', (gltf) => {
@@ -180,7 +196,7 @@ class App {
       model.position.x = characterValue.positionX;
       model.position.y = characterValue.positionY;
       model.position.z = characterValue.positionZ;
-      this._scene.add(model);
+      this._Group.add(model);
 
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
