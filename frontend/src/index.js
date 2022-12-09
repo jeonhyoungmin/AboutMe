@@ -43,19 +43,20 @@ class App {
       }
     );
 
-    const Group = new THREE.Group();
-    this._Group = Group;
-
     this._setupModel();
     this._setupCamera();
     this._setupLight();
     this._setupControls();
+    this._setupRaycaster();
 
+<<<<<<< HEAD
     this._scene.add(this._Group);
     setTimeout(() => {
       this._setupRaycaster();
       console.log(Group.children[1].name);
     }, 200);
+=======
+>>>>>>> 823e5bbfda97754bb0005591281a64d8a15c523c
     window.onresize = this.resize.bind(this);
     this.resize();
 
@@ -64,6 +65,7 @@ class App {
 
   _setupRaycaster() {
     const raycaster = new THREE.Raycaster();
+<<<<<<< HEAD
     const found = raycaster.intersectObjects(this._scene.children);
     const pointer = new THREE.Vector2();
     const intersects = raycaster.intersectObjects(this._scene.children);
@@ -117,6 +119,31 @@ class App {
     //   SELECTED.currentHex = 0x00ff00 * Math.random();
     //   SELECTED.material.emissive.setHex(SELECTED.currentHex);
     // }
+=======
+    this._root.addEventListener('click', this._objectClick.bind(this));
+    this._raycaster = raycaster;
+  }
+
+  _objectClick(event) {
+    const width = this._root.clientWidth;
+    const height = this._root.clientHeight;
+    const xy = new THREE.Vector2();
+    xy.x = (event.offsetX / width) * 2 - 1;
+    xy.y = (event.offsetY / height) * 2 - 1;
+    this._raycaster.setFromCamera(xy, this._camera);
+    console.log(xy);
+    const target = this._raycaster.intersectObjects(this._scene.children);
+    // console.log(target);
+    // console.log(this._scene);
+    console.log(target);
+    for (let i = 0; i < target.length; i++) {
+      if (target[i].object.name === '종이') {
+        console.log(target[i].object.name);
+        const random = Math.floor(Math.random() * 255);
+        target[i].object.material.color.set(random, random, random);
+      }
+    }
+>>>>>>> 823e5bbfda97754bb0005591281a64d8a15c523c
   }
 
   _setupOctree(model) {
@@ -182,13 +209,13 @@ class App {
   _setupModel() {
     const loader = new GLTFLoader();
 
-    loader.load('../public/gltf/space-1.glb', (gltf) => {
+    loader.load('../public/gltf/space-4.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = spaceValue.positionX;
       model.position.y = spaceValue.positionY;
       model.position.z = spaceValue.positionZ;
 
-      this._Group.add(model);
+      this._scene.add(model);
 
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -202,17 +229,10 @@ class App {
 
     loader.load('../public/gltf/paper.glb', (gltf) => {
       const paper = gltf.scene;
-      paper.name = 'paper';
+      paper.userData.name = 'paper';
 
-      this._Group.add(paper);
-
-      // console.log(paper);
-      // window.addEventListener('click', (e) => {
-      //   // if (e.clientX === paper.x) {
-      //   console.log(e);
-      //   // }
-      //   // console.log(e);
-      // });
+      this._scene.add(paper);
+      this._scene.add(new THREE.BoxHelper(paper));
 
       paper.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -222,12 +242,12 @@ class App {
       });
     });
 
-    loader.load('../public/gltf/character-1.glb', (gltf) => {
+    loader.load('../public/gltf/character-2.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = characterValue.positionX;
       model.position.y = characterValue.positionY;
       model.position.z = characterValue.positionZ;
-      this._Group.add(model);
+      this._scene.add(model);
 
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -261,8 +281,8 @@ class App {
       //   diameter / 2
       // );
 
-      const height = 16.1;
-      const diameter = 6;
+      const height = 101;
+      const diameter = 35.4;
 
       model._capsule = new Capsule(
         new THREE.Vector3(0, diameter / 2, 0),
@@ -521,7 +541,7 @@ class App {
 
       this._controls.target.set(
         this._model.position.x,
-        this._model.position.y + 17,
+        this._model.position.y + 100,
         this._model.position.z
       );
     }
