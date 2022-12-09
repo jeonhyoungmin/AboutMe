@@ -17,7 +17,6 @@ import {
   spaceValue,
   characterValue,
 } from './value.js';
-import { Group } from 'three';
 
 class App {
   constructor() {
@@ -44,19 +43,15 @@ class App {
       }
     );
 
-    const Group = new THREE.Group();
-    this._Group = Group;
-
     this._setupModel();
     this._setupCamera();
     this._setupLight();
     this._setupControls();
+    // this._setupRaycaster();
 
-    this._scene.add(this._Group);
-    setTimeout(() => {
-      this._setupRaycaster();
-      console.log(Group.children[1].name);
-    }, 1000);
+    // setTimeout(() => {
+    //   console.log(Group.children[1].name);
+    // }, 1000);
     window.onresize = this.resize.bind(this);
     this.resize();
 
@@ -65,27 +60,30 @@ class App {
 
   _setupRaycaster() {
     const raycaster = new THREE.Raycaster();
-    const found = raycaster.intersectObjects(this._scene.children);
-    const pointer = new THREE.Vector2();
-    // console.dir(found);
-    const objectPosition = new THREE.Vector3();
-    window.addEventListener('click', (e) => {
-      // pointer.x = (e.clientX / this._root.clientWidth) * 2 - 1;
-      // pointer.y = (e.clientY / this._root.clientHeight) * 2 + 1;
-      // console.log(raycaster);
-      // console.log(found);
-      // console.log(this._Group.children[1]);
-      this._Group.children[1].position.x += 1;
-      // if (this._Group.children[1].name === 'paper') {
-      // }
-      objectPosition.x = this._Group.children[1].position.x;
-      objectPosition.y = this._Group.children[1].position.y;
-      objectPosition.z = this._Group.children[1].position.z;
-      console.log(objectPosition);
-    });
-    raycaster.setFromCamera(pointer, this._camera);
+    this._root.addEventListener('click', this._objectClick.bind(this));
+    this._raycaster = raycaster;
+  }
+
+  _objectClick(event) {
+    const width = this._root.clientWidth;
+    const height = this._root.clientHeight;
+    const xy = new THREE.Vector2();
+    xy.x = (event.offsetX / width) * 2 - 1;
+    xy.y = (event.offsetY / height) * 2 - 1;
+    xy.normalize();
+    this._raycaster.setFromCamera(xy, this._camera);
+    console.log(xy);
+    const target = this._raycaster.intersectObjects(this._scene.children);
+    // console.log(target);
     // console.log(this._scene);
-    // console.log(this._papar);
+    console.log(target);
+    for (let i = 0; i < target.length; i++) {
+      if (target[i].object.name === '종이') {
+        console.log(target[i].object.name);
+        const random = Math.floor(Math.random() * 255);
+        target[i].object.material.color.set(random, random, random);
+      }
+    }
   }
 
   _setupOctree(model) {
@@ -151,13 +149,13 @@ class App {
   _setupModel() {
     const loader = new GLTFLoader();
 
-    loader.load('../public/gltf/space-1.glb', (gltf) => {
+    loader.load('../public/gltf/space-3.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = spaceValue.positionX;
       model.position.y = spaceValue.positionY;
       model.position.z = spaceValue.positionZ;
 
-      this._Group.add(model);
+      this._scene.add(model);
 
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -171,17 +169,10 @@ class App {
 
     loader.load('../public/gltf/paper.glb', (gltf) => {
       const paper = gltf.scene;
-      paper.name = 'paper';
+      paper.userData.name = 'paper';
 
-      this._Group.add(paper);
-
-      // console.log(paper);
-      // window.addEventListener('click', (e) => {
-      //   // if (e.clientX === paper.x) {
-      //   console.log(e);
-      //   // }
-      //   // console.log(e);
-      // });
+      this._scene.add(paper);
+      this._scene.add(new THREE.BoxHelper(paper));
 
       paper.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -196,7 +187,7 @@ class App {
       model.position.x = characterValue.positionX;
       model.position.y = characterValue.positionY;
       model.position.z = characterValue.positionZ;
-      this._Group.add(model);
+      this._scene.add(model);
 
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
