@@ -47,11 +47,8 @@ class App {
     this._setupCamera();
     this._setupLight();
     this._setupControls();
-    // this._setupRaycaster();
+    this._setupRaycaster();
 
-    // setTimeout(() => {
-    //   console.log(Group.children[1].name);
-    // }, 1000);
     window.onresize = this.resize.bind(this);
     this.resize();
 
@@ -70,7 +67,6 @@ class App {
     const xy = new THREE.Vector2();
     xy.x = (event.offsetX / width) * 2 - 1;
     xy.y = (event.offsetY / height) * 2 - 1;
-    xy.normalize();
     this._raycaster.setFromCamera(xy, this._camera);
     console.log(xy);
     const target = this._raycaster.intersectObjects(this._scene.children);
@@ -149,7 +145,7 @@ class App {
   _setupModel() {
     const loader = new GLTFLoader();
 
-    loader.load('../public/gltf/space-3.glb', (gltf) => {
+    loader.load('../public/gltf/space-4.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = spaceValue.positionX;
       model.position.y = spaceValue.positionY;
@@ -182,7 +178,7 @@ class App {
       });
     });
 
-    loader.load('../public/gltf/character-1.glb', (gltf) => {
+    loader.load('../public/gltf/character-2.glb', (gltf) => {
       const model = gltf.scene;
       model.position.x = characterValue.positionX;
       model.position.y = characterValue.positionY;
@@ -221,8 +217,8 @@ class App {
       //   diameter / 2
       // );
 
-      const height = 16.1;
-      const diameter = 6;
+      const height = 101;
+      const diameter = 35.4;
 
       model._capsule = new Capsule(
         new THREE.Vector3(0, diameter / 2, 0),
@@ -481,7 +477,7 @@ class App {
 
       this._controls.target.set(
         this._model.position.x,
-        this._model.position.y + 17,
+        this._model.position.y + 100,
         this._model.position.z
       );
     }
