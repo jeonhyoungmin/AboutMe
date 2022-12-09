@@ -1,10 +1,10 @@
 const cameraValue = {
-  fov: 50,
+  fov: 45,
   near: 0.1,
-  far: 10000,
+  far: 1000,
   positionX: 0,
-  positionY: 100,
-  positionZ: -100,
+  positionY: 40,
+  positionZ: 30,
 };
 
 const ambientLightValue = {
