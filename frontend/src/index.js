@@ -49,14 +49,6 @@ class App {
     this._setupControls();
     this._setupRaycaster();
 
-<<<<<<< HEAD
-    this._scene.add(this._Group);
-    setTimeout(() => {
-      this._setupRaycaster();
-      console.log(Group.children[1].name);
-    }, 200);
-=======
->>>>>>> 823e5bbfda97754bb0005591281a64d8a15c523c
     window.onresize = this.resize.bind(this);
     this.resize();
 
@@ -65,61 +57,6 @@ class App {
 
   _setupRaycaster() {
     const raycaster = new THREE.Raycaster();
-<<<<<<< HEAD
-    const found = raycaster.intersectObjects(this._scene.children);
-    const pointer = new THREE.Vector2();
-    const intersects = raycaster.intersectObjects(this._scene.children);
-    this._pointer = pointer;
-    window.addEventListener('click', (e) => {
-      // pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-      // pointer.y = (e.clientY / window.innerHeight) * 2 + 1;
-      // console.log(raycaster);
-      // console.log(found);
-      // console.log(this._Group.children[1]);
-      // this._Group.children[1].position.x += 1;
-      // if (this._Group.children[1].name === 'paper') {
-      // }
-      // objectPosition.x = this._Group.children[1].position.x;
-      // objectPosition.y = this._Group.children[1].position.y;
-      // objectPosition.z = this._Group.children[1].position.z;
-      // console.log(objectPosition);
-      // raycaster.setFromCamera(pointer, this._camera);
-      // console.log(raycaster);
-      //   if (this._Group.children[1].name === 'paper') {
-      //     console.log('hi');
-      //   }
-      this._root.addEventListener(
-        'mousemove',
-        this._onDocumentMouseMove(e),
-        false
-      );
-      this._root.addEventListener(
-        'mousedown',
-        this._onDocumentMouseDown(e),
-        false
-      );
-      raycaster.setFromCamera(this._pointer, this._camera);
-      console.log(intersects.length);
-      console.log(raycaster);
-    });
-  }
-
-  _onDocumentMouseMove(event) {
-    event.preventDefault();
-    const gap1 = event.clientY - event.offsetY;
-    const gap2 = event.clientX - event.offsetX;
-    this._pointer.x = ((event.clientX - gap2) / window.innerWidth) * 2 - 1;
-    this._pointer.y = -((event.clientY - gap1) / window.innerHeight) * 2 + 1;
-    console.log(this._pointer);
-  }
-
-  _onDocumentMouseDown(event) {
-    // event.preventDefault();
-    // if (SELECTED) {
-    //   SELECTED.currentHex = 0x00ff00 * Math.random();
-    //   SELECTED.material.emissive.setHex(SELECTED.currentHex);
-    // }
-=======
     this._root.addEventListener('click', this._objectClick.bind(this));
     this._raycaster = raycaster;
   }
@@ -143,7 +80,6 @@ class App {
         target[i].object.material.color.set(random, random, random);
       }
     }
->>>>>>> 823e5bbfda97754bb0005591281a64d8a15c523c
   }
 
   _setupOctree(model) {
