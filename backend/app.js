@@ -19,9 +19,28 @@ createServer((req, res) => {
   };
 
   if ((req.method = "GET")) {
+    // res.setHeader("Access-Control-Allow-Origin", "*");
+    // res.setHeader(
+    //   "Access-Control-Allow-Methods",
+    //   "GET, POST, PUT, PATCH, DELETE"
+    // );
+    // res.setHeader(
+    //   "Access-Control-Allow-Headers",
+    //   "Content-Type, Authorization"
+    // );
     let url = req.url;
     console.log(url);
     switch (url) {
+      case "/box":
+        const data = {
+          상자: "하이",
+        };
+        res.writeHead(200, {
+          "Content-Type": "application/json; charset=utf-8",
+        });
+        res.write(JSON.stringify(data));
+        res.end();
+        break;
       case "/favicon.ico":
         staticRoute(
           "../frontend/public/image/favicon.png",
