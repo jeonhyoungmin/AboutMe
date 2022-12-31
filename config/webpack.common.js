@@ -7,7 +7,7 @@ const __dirname = path.resolve();
 const common = {
   entry: path.resolve(__dirname, 'src/script.js'),
   output: {
-    filename: '[name].js',
+    filename: '[name].[hash].js',
     path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'source-map',
