@@ -22,6 +22,9 @@ body {
 }
 
 #cursor {
+  background-color: blue;
+  width: 10px;
+  height: 10px;
   position: absolute;
   z-index: 2;
 }
