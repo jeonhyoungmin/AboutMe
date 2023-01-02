@@ -5,7 +5,10 @@ import path from 'path';
 const __dirname = path.resolve();
 
 const common = {
-  entry: path.resolve(__dirname, 'src/script.js'),
+  entry: {
+    main: './src/script.js',
+    first: './src/first/first.js',
+  },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
@@ -16,7 +19,15 @@ const common = {
     //    { from: path.resolve(__dirname, 'public') }
     // }),
     new HtmlWebpackPlugin({
+      filename: 'index.html',
       template: path.resolve(__dirname, 'src/index.html'),
+      chunks: ['main'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'first.html',
+      template: path.resolve(__dirname, 'src/first/first.html'),
+      chunks: ['first'],
       minify: true,
     }),
     new MiniCSSExtractPlugin(),
