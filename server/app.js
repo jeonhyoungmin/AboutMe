@@ -63,7 +63,7 @@ createServer((req, res) => {
 
       // 페이지네이션 용 GET 요청
       case '/first.html':
-        staticRoute(`dist${url}`, 200, 'text/html');
+        staticRoute(`dist${url}`, 301, 'text/html');
 
         // const data = {
         //   상자: '하이',
