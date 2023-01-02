@@ -211,7 +211,7 @@ window.addEventListener('click', (e) => {
   console.log(intersects);
   for (let i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name === '상자') {
-      fetch('http://localhost:3000/box')
+      fetch('http://127.0.0.1:3000/box')
         .then((response) => response.json())
         .then((res) => console.log(res))
         .catch((err) => console.log(err));

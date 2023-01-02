@@ -36,7 +36,7 @@ createServer((req, res) => {
 
     switch (url) {
       case '/favicon.ico':
-        staticRoute('../public/img/favicon.png', 200, 'image/png', '');
+        staticRoute('public/img/favicon.png', 200, 'image/png', '');
         break;
 
       // 메인 index, js, css
