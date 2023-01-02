@@ -13,7 +13,7 @@ const common = {
   devtool: 'source-map',
   plugins: [
     // new CopyWebpackPlugin({
-    //   patterns: [{ from: '../public' }],
+    //    { from: path.resolve(__dirname, 'public') }
     // }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
@@ -33,7 +33,7 @@ const common = {
         use: ['babel-loader'],
       },
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: [MiniCSSExtractPlugin.loader, 'css-loader'],
       },
       {
@@ -72,12 +72,12 @@ const common = {
   // resolve: {
   //   extensions: ['.tsx', '.ts', '.js'],
   // },
-  // resolve: {
-  //   alias: {
-  //     '@': path.resolve(__dirname, '../src/'),
-  //   },
-  //   extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-  // },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../src/'),
+    },
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+  },
 };
 
 export default common;
