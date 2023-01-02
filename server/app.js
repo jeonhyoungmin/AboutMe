@@ -44,7 +44,7 @@ createServer((req, res) => {
         staticRoute('dist/index.html', 200, 'text/html');
         break;
       case url.endsWith('css') ? url : '':
-        staticRoute(`dist/${url}`, 200, 'text/css');
+        staticRoute(`dist${url}`, 200, 'text/css');
         break;
       case url.endsWith('js') ? url : '':
         staticRoute(`dist${url}`, 200);
@@ -62,15 +62,17 @@ createServer((req, res) => {
         break;
 
       // 페이지네이션 용 GET 요청
-      case '/box':
-        const data = {
-          상자: '하이',
-        };
-        res.writeHead(200, {
-          'Content-Type': 'application/json; charset=utf-8',
-        });
-        res.write(JSON.stringify(data));
-        res.end();
+      case '/first.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+
+        // const data = {
+        //   상자: '하이',
+        // };
+        // res.writeHead(200, {
+        //   'Content-Type': 'application/json; charset=utf-8',
+        // });
+        // res.write(JSON.stringify(data));
+        // res.end();
         break;
     }
   }
