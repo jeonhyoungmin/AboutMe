@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Capsule } from 'three/examples/jsm/math/Capsule.js';
 import '../public/gltf/test.glb';
+import './style.css';
 
 const pointer = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
