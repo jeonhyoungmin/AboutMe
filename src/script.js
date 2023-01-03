@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Capsule } from 'three/examples/jsm/math/Capsule.js';
 import '../public/gltf/test.glb';
+import '../public/img/sky.png';
 import './style.css';
 
 const pointer = new THREE.Vector2();
@@ -35,6 +36,13 @@ renderer.shadowMap.type = THREE.VSMShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
+
+const texture = new THREE.TextureLoader().load(
+  '../public/img/sky.png ',
+  (texture) => {
+    scene.background = texture;
+  }
+);
 
 // 카메라가 곧 플레이어
 const camera = new THREE.PerspectiveCamera(
