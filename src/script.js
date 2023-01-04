@@ -3,13 +3,13 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // import Stats from 'three/examples/jsm/libs/stats.module.js';
 // import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 // * 3차원 공간을 분할하는 자료구조: 3차원 공간을 효율적으로 분할하고 빠르게 충돌 검사를 할 수 있음
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Capsule } from 'three/examples/jsm/math/Capsule.js';
 import '../public/gltf/test.glb';
-import '../public/img/sky.png';
+import '../public/img/pure_sky.hdr';
 import './style.css';
 
 const pointer = new THREE.Vector2();
@@ -37,12 +37,11 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
 
-const texture = new THREE.TextureLoader().load(
-  '../public/img/sky.png ',
-  (texture) => {
-    scene.background = texture;
-  }
-);
+new RGBELoader().load('../public/img/pure_sky.hdr ', (texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = texture;
+  scene.environment = texture;
+});
 
 // 카메라가 곧 플레이어
 const camera = new THREE.PerspectiveCamera(
