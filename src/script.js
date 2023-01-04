@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // import Stats from 'three/examples/jsm/libs/stats.module.js';
 // import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 // * 3차원 공간을 분할하는 자료구조: 3차원 공간을 효율적으로 분할하고 빠르게 충돌 검사를 할 수 있음
 import { Octree } from 'three/examples/jsm/math/Octree.js';
@@ -40,7 +40,7 @@ container.appendChild(renderer.domElement);
 new RGBELoader().load('../public/img/pure_sky.hdr ', (texture) => {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.background = texture;
-  scene.environment = texture;
+  // scene.environment = texture;
 });
 
 // 카메라가 곧 플레이어
@@ -61,14 +61,14 @@ const fihemisphereLight = new THREE.HemisphereLight(0xfbf6bf, 0xfbf6bf, 0.5);
 fihemisphereLight.position.set(2, 1, 1);
 scene.add(fihemisphereLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight.position.set(0, 10, -8);
+directionalLight.position.set(0, 7, 0);
 directionalLight.castShadow = true;
 directionalLight.shadow.camera.near = 0.01;
 directionalLight.shadow.camera.far = 100;
-directionalLight.shadow.camera.right = 10;
-directionalLight.shadow.camera.left = -10;
-directionalLight.shadow.camera.top = 10;
-directionalLight.shadow.camera.bottom = -10;
+directionalLight.shadow.camera.right = 100;
+directionalLight.shadow.camera.left = -100;
+directionalLight.shadow.camera.top = 100;
+directionalLight.shadow.camera.bottom = -100;
 directionalLight.shadow.mapSize.width = 1024;
 directionalLight.shadow.mapSize.height = 1024;
 directionalLight.shadow.radius = 5;
@@ -146,9 +146,9 @@ function getSideVector() {
 function controls(deltaTime) {
   let speedDelta = 0;
   if (keyStates['ShiftLeft']) {
-    speedDelta = deltaTime * (playerOnFloor ? 15 : 6);
+    speedDelta = deltaTime * (playerOnFloor ? 30 : 6);
   } else {
-    speedDelta = deltaTime * (playerOnFloor ? 8 : 6);
+    speedDelta = deltaTime * (playerOnFloor ? 15 : 6);
   }
   if (keyStates['KeyW']) {
     playerVelocity.add(getForwardVector().multiplyScalar(speedDelta));
@@ -213,18 +213,21 @@ window.addEventListener('resize', resize);
 animate();
 
 window.addEventListener('click', (e) => {
-  console.log(raycaster);
+  // console.log(raycaster);
   raycaster.setFromCamera(pointer, camera);
-  console.log(raycaster);
+  // console.log(raycaster);
   const intersects = raycaster.intersectObjects(scene.children);
-  console.log(intersects);
+  // console.log(intersects);
   for (let i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name === '상자') {
-      location.href = '/first.html';
-      // fetch('http://127.0.0.1:3000/first.html')
-      //   .then((response) => response.json())
-      //   .then((res) => console.log(res))
-      //   .catch((err) => console.log(err));
+      if (intersects[i].distance <= 10) {
+        console.log(intersects);
+        // location.href = '/first.html';
+        // fetch('http://127.0.0.1:3000/first.html')
+        //   .then((response) => response.json())
+        //   .then((res) => console.log(res))
+        //   .catch((err) => console.log(err));
+      }
     }
   }
 });
