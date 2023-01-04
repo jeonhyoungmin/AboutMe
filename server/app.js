@@ -49,6 +49,9 @@ createServer((req, res) => {
       case url.endsWith('js') ? url : '':
         staticRoute(`dist${url}`, 200);
         break;
+      case url.endsWith('hdr') ? url : '':
+        staticRoute(`dist${url}`, 200, 'image/vnd.radiance', '');
+        break;
 
       // 메인 페이지 3D 파일
       // case '/value.js':

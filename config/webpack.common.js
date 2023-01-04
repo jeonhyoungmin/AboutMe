@@ -48,7 +48,7 @@ const common = {
         use: [MiniCSSExtractPlugin.loader, 'css-loader'],
       },
       {
-        test: /\.(jpg|png|gif|svg)$/i,
+        test: /\.(jpg|png|gif|svg|hdr)$/i,
         use: [
           {
             loader: 'file-loader',
