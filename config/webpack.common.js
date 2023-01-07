@@ -5,18 +5,29 @@ import path from 'path';
 const __dirname = path.resolve();
 
 const common = {
-  entry: path.resolve(__dirname, 'src/script.js'),
+  entry: {
+    main: './src/script.js',
+    first: './src/first/first.js',
+  },
   output: {
-    filename: '[name].[hash].js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'source-map',
   plugins: [
     // new CopyWebpackPlugin({
-    //   patterns: [{ from: '../public' }],
+    //    { from: path.resolve(__dirname, 'public') }
     // }),
     new HtmlWebpackPlugin({
+      filename: 'index.html',
       template: path.resolve(__dirname, 'src/index.html'),
+      chunks: ['main'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'first.html',
+      template: path.resolve(__dirname, 'src/first/first.html'),
+      chunks: ['first'],
       minify: true,
     }),
     new MiniCSSExtractPlugin(),
@@ -33,11 +44,11 @@ const common = {
         use: ['babel-loader'],
       },
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: [MiniCSSExtractPlugin.loader, 'css-loader'],
       },
       {
-        test: /\.(jpg|png|gif|svg)$/i,
+        test: /\.(jpg|png|gif|svg|hdr)$/i,
         use: [
           {
             loader: 'file-loader',
@@ -72,12 +83,12 @@ const common = {
   // resolve: {
   //   extensions: ['.tsx', '.ts', '.js'],
   // },
-  // resolve: {
-  //   alias: {
-  //     '@': path.resolve(__dirname, '../src/'),
-  //   },
-  //   extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-  // },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../src/'),
+    },
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+  },
 };
 
 export default common;

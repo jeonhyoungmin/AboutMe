@@ -4,7 +4,12 @@
 }
 
 body {
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #root {
@@ -13,4 +18,18 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
+}
+
+#cursor {
+  background-color: blue;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  z-index: 2;
+}
+
+#descript {
+  position: absolute;
+  z-index: 3;
 }

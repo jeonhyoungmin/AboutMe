@@ -4,12 +4,22 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./style.css" />
-    <!-- <script type="module" src="./script.js" defer></script> -->
+    <!-- <link rel="stylesheet" type="text/css" href="./style.css" /> -->
+    <!-- <link rel="stylesheet" href="style.css" /> -->
     <title>AboutMe</title>
   </head>
   <body>
     <div id="root"></div>
+    <div id="cursor"></div>
+    <!-- <div id="descript">
+      Click to Play
+      <br />
+      Move: W A S D
+      <br />
+      Run: shift
+      <br />
+      Jump: Space
+    </div> -->
     <script type="importmap">
       {
         "imports": {
@@ -20,9 +30,13 @@
           "three/examples/jsm/math/Octree.js": "../node_modules/three/examples/jsm/math/Octree.js",
           "three/examples/jsm/math/Capsule.js": "../node_modules/three/examples/jsm/math/Capsule.js",
           "three/examples/jsm/loaders/RGBELoader.js": "../node_modules/three/examples/jsm/loaders/RGBELoader.js",
-          "three/examples/jsm/controls/FirstPersonControls.js": "../node_modules/three/examples/jsm/controls/FirstPersonControls.js"
+          "three/examples/jsm/controls/FirstPersonControls.js": "../node_modules/three/examples/jsm/controls/FirstPersonControls.js",
+          "three/examples/jsm/postprocessing/RenderPass.js": "../node_modules/three/examples/jsm/postprocessing/RenderPass.js",
+          "three/examples/jsm/postprocessing/EffectComposer.js": "../node_modules/three/examples/jsm/postprocessing/EffectComposer.js",
+          "three/examples/jsm/postprocessing/UnrealBloomPass.js": "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
         }
       }
     </script>
+    <!-- <script type="module" src="./script.js" defer></script> -->
   </body>
 </html>
