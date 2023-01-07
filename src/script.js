@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+// import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+// import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // import Stats from 'three/examples/jsm/libs/stats.module.js';
 // import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
@@ -37,11 +40,11 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
 
-new RGBELoader().load('../public/img/pure_sky.hdr ', (texture) => {
-  texture.mapping = THREE.EquirectangularReflectionMapping;
-  scene.background = texture;
-  // scene.environment = texture;
-});
+// new RGBELoader().load('../public/img/pure_sky.hdr ', (texture) => {
+//   texture.mapping = THREE.EquirectangularReflectionMapping;
+//   scene.background = texture;
+//   // scene.environment = texture;
+// });
 
 // 카메라가 곧 플레이어
 const camera = new THREE.PerspectiveCamera(
@@ -57,7 +60,20 @@ const playerCapsule = new Capsule(
   0.35
 );
 
-const fihemisphereLight = new THREE.HemisphereLight(0xfbf6bf, 0xfbf6bf, 0.5);
+// console.log(scene);
+// const renderScene = new RenderPass(scene, camera);
+// const composer = new EffectComposer(renderer);
+// composer.addPass(renderScene);
+
+// const bloomPass = new UnrealBloomPass(
+//   new THREE.Vector2(window.innerWidth, window.innerHeight),
+//   1.6,
+//   0.1,
+//   0.1
+// );
+// composer.addPass(bloomPass);
+
+const fihemisphereLight = new THREE.HemisphereLight(0xffffff, 0xfbf6bf, 0.5);
 fihemisphereLight.position.set(2, 1, 1);
 scene.add(fihemisphereLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -73,7 +89,7 @@ directionalLight.shadow.mapSize.width = 1024;
 directionalLight.shadow.mapSize.height = 1024;
 directionalLight.shadow.radius = 5;
 directionalLight.shadow.bias = -0.00006;
-scene.add(directionalLight);
+// scene.add(directionalLight);
 const axisHelper = new THREE.AxesHelper(200);
 const directionalLightHelper = new THREE.DirectionalLightHelper(
   directionalLight,
@@ -201,6 +217,7 @@ function animate() {
     teleportPlayerIfOob();
   }
   renderer.render(scene, camera);
+  // composer.render();
   requestAnimationFrame(animate);
 }
 
@@ -209,6 +226,7 @@ function resize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
 window.addEventListener('resize', resize);
 animate();
 
