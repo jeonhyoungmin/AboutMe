@@ -78,6 +78,7 @@ scene.add(ambientLight);
 // const fihemisphereLight = new THREE.HemisphereLight(0xffffff, 0xfbf6bf, 0.5);
 // fihemisphereLight.position.set(2, 1, 1);
 // scene.add(fihemisphereLight);
+
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(0, 7, 0);
 directionalLight.castShadow = true;
