@@ -73,32 +73,34 @@ const playerCapsule = new Capsule(
 // );
 // composer.addPass(bloomPass);
 
-const fihemisphereLight = new THREE.HemisphereLight(0xffffff, 0xfbf6bf, 0.5);
-fihemisphereLight.position.set(2, 1, 1);
-scene.add(fihemisphereLight);
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-// directionalLight.position.set(0, 7, 0);
-// directionalLight.castShadow = true;
-// directionalLight.shadow.camera.near = 0.01;
-// directionalLight.shadow.camera.far = 100;
-// directionalLight.shadow.camera.right = 100;
-// directionalLight.shadow.camera.left = -100;
-// directionalLight.shadow.camera.top = 100;
-// directionalLight.shadow.camera.bottom = -100;
-// directionalLight.shadow.mapSize.width = 1024;
-// directionalLight.shadow.mapSize.height = 1024;
-// directionalLight.shadow.radius = 5;
-// directionalLight.shadow.bias = -0.00006;
-// scene.add(directionalLight);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+// const fihemisphereLight = new THREE.HemisphereLight(0xffffff, 0xfbf6bf, 0.5);
+// fihemisphereLight.position.set(2, 1, 1);
+// scene.add(fihemisphereLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(0, 7, 0);
+directionalLight.castShadow = true;
+directionalLight.shadow.camera.near = 0.01;
+directionalLight.shadow.camera.far = 100;
+directionalLight.shadow.camera.right = 100;
+directionalLight.shadow.camera.left = -100;
+directionalLight.shadow.camera.top = 100;
+directionalLight.shadow.camera.bottom = -100;
+directionalLight.shadow.mapSize.width = 1024;
+directionalLight.shadow.mapSize.height = 1024;
+directionalLight.shadow.radius = 5;
+directionalLight.shadow.bias = -0.00006;
+scene.add(directionalLight);
 const axisHelper = new THREE.AxesHelper(200);
-// const directionalLightHelper = new THREE.DirectionalLightHelper(
-//   directionalLight,
-//   5
-// );
-// const shadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+const directionalLightHelper = new THREE.DirectionalLightHelper(
+  directionalLight,
+  5
+);
+const shadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
 scene.add(axisHelper);
-// scene.add(directionalLightHelper);
-// scene.add(shadowHelper);
+scene.add(directionalLightHelper);
+scene.add(shadowHelper);
 
 document.addEventListener('keydown', (e) => {
   keyStates[e.code] = true;
