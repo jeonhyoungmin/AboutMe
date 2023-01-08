@@ -1,4 +1,4 @@
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+// import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCSSExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
@@ -7,7 +7,7 @@ const __dirname = path.resolve();
 const common = {
   entry: {
     main: './src/script.js',
-    first: './src/first/first.js',
+    root: './src/root/script.js',
   },
   output: {
     filename: '[name].js',
@@ -25,9 +25,9 @@ const common = {
       minify: true,
     }),
     new HtmlWebpackPlugin({
-      filename: 'first.html',
-      template: path.resolve(__dirname, 'src/first/first.html'),
-      chunks: ['first'],
+      filename: 'root.html',
+      template: path.resolve(__dirname, 'src/root/index.html'),
+      chunks: ['root'],
       minify: true,
     }),
     new MiniCSSExtractPlugin(),
