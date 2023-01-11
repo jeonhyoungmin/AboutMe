@@ -1,19 +1,16 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-// import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-// import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-// import Stats from 'three/examples/jsm/libs/stats.module.js';
-// import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
-
-// * 3차원 공간을 분할하는 자료구조: 3차원 공간을 효율적으로 분할하고 빠르게 충돌 검사를 할 수 있음
 import { Octree } from 'three/examples/jsm/math/Octree.js';
-import { Capsule } from 'three/examples/jsm/math/Capsule.js';
 import '../../public/gltf/root.glb';
-import '../../public/img/pure_sky.hdr';
 import './style.css';
+
+import GLTF from '../components/GLTF.js';
+import Camera from '../components/Camera.js';
+import Raycaster from '../components/Raycaster.js';
+import PlayerCapsule from '../components/Capsule.js';
+import DirectionalLight from '../components/Light.js';
+import Keystates from '../components/Keystates.js';
+import Pointlight from '../components/Pointlight.js';
+import { PointLight } from 'three';
 
 class RootHTML {
   constructor() {
@@ -49,129 +46,100 @@ class RootHTML {
     this._setCapsule();
     this._setLight();
     this._setGLTFLoader();
-    this._setControls();
+    this._setKeystates();
     this._setRaycaster();
 
-    // window.addEventListener('resize', this.resize);
     window.onresize = this.resize.bind(this);
-    // this.resize();
     this.animate();
-    // requestAnimationFrame(this.animate.bind(this));
   }
 
   _setRaycaster() {
-    const pointer = new THREE.Vector2();
-    const raycaster = new THREE.Raycaster();
-    window.addEventListener('click', (e) => {
-      raycaster.setFromCamera(pointer, this._camera);
-      const intersects = raycaster.intersectObjects(this._scene.children);
-      for (let i = 0; i < intersects.length; i++) {
-        console.log(intersects);
-        if (intersects[i].object.name === '상자') {
-          if (intersects[i].distance <= 10) {
-            console.log(intersects);
-            // location.href = '/first.html';
-            // fetch('http://127.0.0.1:3000/first.html')
-            //   .then((response) => response.json())
-            //   .then((res) => console.log(res))
-            //   .catch((err) => console.log(err));
-          }
-        }
-      }
-    });
+    new Raycaster(this._camera, this._scene);
   }
 
   _setCamera() {
-    const camera = new THREE.PerspectiveCamera(
-      70,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    camera.rotation.order = 'YXZ';
-    this._camera = camera;
+    this._camera = new Camera()._camera;
   }
 
   _setCapsule() {
-    const playerCapsule = new Capsule(
-      new THREE.Vector3(0, 0.35, 0),
-      new THREE.Vector3(0, 1, 0),
-      0.35
-    );
-    this._playerCapsule = playerCapsule;
+    this._playerCapsule = new PlayerCapsule()._playerCapsule;
   }
 
   _setLight() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const rainbow = [
+      'red',
+      'orange',
+      'yellow',
+      'green',
+      'blue',
+      'indigo',
+      'purple',
+    ];
+    // new DirectionalLight(this._scene, 0xffffff, 0.1, false);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
     this._scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
-    directionalLight.position.set(0, 10, 10);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.camera.near = 0.01;
-    directionalLight.shadow.camera.far = 100;
-    directionalLight.shadow.camera.right = 100;
-    directionalLight.shadow.camera.left = -100;
-    directionalLight.shadow.camera.top = 100;
-    directionalLight.shadow.camera.bottom = -100;
-    directionalLight.shadow.mapSize.width = 1024;
-    directionalLight.shadow.mapSize.height = 1024;
-    // directionalLight.shadow.radius = 5;
-    // directionalLight.shadow.bias = -0.00006;
-    this._scene.add(directionalLight);
-    const axisHelper = new THREE.AxesHelper(200);
-    const directionalLightHelper = new THREE.DirectionalLightHelper(
-      directionalLight,
-      5
-    );
-    const shadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-    // this._scene.add(axisHelper);
-    // this._scene.add(directionalLightHelper);
-    // this._scene.add(shadowHelper);
+
+    // for (let i = 1; i <= rainbow.length; i++) {
+    //   const light = new THREE.PointLight(rainbow[0], 10, 2);
+    //   // light.position.set(0, i, -(i / 2));
+    //   light.position.set(0, 0, -1);
+    //   this._scene.add(light);
+    //   const lightHelper = new THREE.PointLight(light, 2, rainbow[0]);
+    //   this._scene.add(lightHelper);
+    // }
+    // const light = new THREE.PointLight(rainbow[0], 10, 2);
+    // light.position.set(0, 0, -1);
+    // this._scene.add(light);
+    // const lightHelper = new THREE.PointLightHelper(light, 2, rainbow[0]);
+    // this._scene.add(lightHelper);
+
+    // let cameraPosition = this._camera.position;
+    // console.log(cameraPosition);
+
+    // if ((this._camera.position.z = -10)) {
+    //   new Pointlight(this._scene, 'red', 0, 0, -1);
+    // }
+    // new Pointlight(this._scene, 'orange', 0, 0, -3);
+    // new Pointlight(this._scene, 'yellow', 0, 1, -5);
+    // new Pointlight(this._scene, 'green', 0, 1, -6);
+    // new Pointlight(this._scene, 'blue', 0, 1, -8);
+    // new Pointlight(this._scene, 'indigo', 0, 1, -10);
+    // new Pointlight(this._scene, 'purple', 0, 1, -12);
+
+    // new Pointlight(this._scene, 'red', 0, 2, -13);
+    // new Pointlight(this._scene, 'orange', 0, 2, -15);
+    // new Pointlight(this._scene, 'yellow', 0, 2, -17);
+    // new Pointlight(this._scene, 'green', 0, 2, -19);
+    // new Pointlight(this._scene, 'blue', 0, 2, -21);
+    // new Pointlight(this._scene, 'indigo', 0, 3, -23);
+    // new Pointlight(this._scene, 'purple', 0, 3, -25);
+
+    // for (let i = 0; i < rainbow.length; i++) {
+    //   new Pointlight(this._scene, rainbow[i], 0, 0, -i - 1, false);
+    // }
+    // for (let i = 0; i < rainbow.length; i++) {
+    //   new Pointlight(this._scene, rainbow[i], 0, 1, -i - 5, false);
+    // }
+    // for (let i = 0; i < rainbow.length; i++) {
+    //   new Pointlight(this._scene, rainbow[i], 0, 2, -i - 10, false);
+    // }
+    // new Pointlight(this._scene, 'green', 0, 3, -18);
   }
+
+  // pointlight() {
+  //   let p = this._camera.position;
+  //   new Pointlight(this._scene, 'red', p.x, p.y, p.z);
+  // }
 
   _setGLTFLoader() {
-    const loader = new GLTFLoader();
-    loader.load('../../public/gltf/root.glb', (gltf) => {
-      this._scene.add(gltf.scene);
-      this._worldOctree.fromGraphNode(gltf.scene);
-      gltf.scene.traverse((child) => {
-        if (child.isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-          if (child.material.map) {
-            child.material.map.anisotropy = 4;
-          }
-        }
-      });
-    });
+    new GLTF('../../public/gltf/root.glb', this._scene, this._worldOctree);
   }
 
-  _setControls() {
-    const keyStates = {};
-
-    document.addEventListener('keydown', (e) => {
-      keyStates[e.code] = true;
-    });
-    document.addEventListener('keyup', (e) => {
-      keyStates[e.code] = false;
-    });
-    this._container.addEventListener('mousedown', () => {
-      document.body.requestPointerLock();
-    });
-    document.body.addEventListener('mousemove', (e) => {
-      if (document.pointerLockElement === document.body) {
-        this._camera.rotation.y -= e.movementX / 800;
-        this._camera.rotation.x -= e.movementY / 800;
-      }
-    });
-
-    this._keyStates = keyStates;
+  _setKeystates() {
+    this._keyStates = new Keystates(this._container, this._camera)._keyStates;
   }
 
   controls(deltaTime) {
-    // const playerVelocity = new THREE.Vector3();
-    // let playerOnFloor = false;
-
     let speedDelta = 0;
     if (this._keyStates['ShiftLeft']) {
       speedDelta = deltaTime * (this.playerOnFloor ? 30 : 6);
@@ -235,7 +203,6 @@ class RootHTML {
 
   updatePlayer(deltaTime) {
     const GRAVITY = 30;
-
     let damping = Math.exp(-6 * deltaTime) - 1;
     if (!this.playerOnFloor) {
       this._playerVelocity.y -= GRAVITY * deltaTime;
@@ -267,9 +234,10 @@ class RootHTML {
   }
 
   animate() {
+    // console.log(this._camera.position);
     const STEPS_PER_FRAME = 30;
-
     const deltaTime = Math.min(0.05, this._clock.getDelta()) / STEPS_PER_FRAME;
+    // this.pointlight();
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
       this.controls(deltaTime);
       this.updatePlayer(deltaTime);
