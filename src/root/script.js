@@ -10,13 +10,13 @@ import PlayerCapsule from '../components/Capsule.js';
 import DirectionalLight from '../components/Light.js';
 import Keystates from '../components/Keystates.js';
 import Pointlight from '../components/Pointlight.js';
-import { PointLight } from 'three';
+import Spotlight from '../components/Spotlight.js';
 
 class RootHTML {
   constructor() {
+    this.stairSwitch = true;
+
     const container = document.getElementById('root');
-    const cursor = document.getElementById('cursor');
-    const descript = document.getElementById('descript');
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -66,70 +66,12 @@ class RootHTML {
   }
 
   _setLight() {
-    const rainbow = [
-      'red',
-      'orange',
-      'yellow',
-      'green',
-      'blue',
-      'indigo',
-      'purple',
-    ];
     // new DirectionalLight(this._scene, 0xffffff, 0.1, false);
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-    this._scene.add(ambientLight);
-
-    // for (let i = 1; i <= rainbow.length; i++) {
-    //   const light = new THREE.PointLight(rainbow[0], 10, 2);
-    //   // light.position.set(0, i, -(i / 2));
-    //   light.position.set(0, 0, -1);
-    //   this._scene.add(light);
-    //   const lightHelper = new THREE.PointLight(light, 2, rainbow[0]);
-    //   this._scene.add(lightHelper);
-    // }
-    // const light = new THREE.PointLight(rainbow[0], 10, 2);
-    // light.position.set(0, 0, -1);
-    // this._scene.add(light);
-    // const lightHelper = new THREE.PointLightHelper(light, 2, rainbow[0]);
-    // this._scene.add(lightHelper);
-
-    // let cameraPosition = this._camera.position;
-    // console.log(cameraPosition);
-
-    // if ((this._camera.position.z = -10)) {
-    //   new Pointlight(this._scene, 'red', 0, 0, -1);
-    // }
-    // new Pointlight(this._scene, 'orange', 0, 0, -3);
-    // new Pointlight(this._scene, 'yellow', 0, 1, -5);
-    // new Pointlight(this._scene, 'green', 0, 1, -6);
-    // new Pointlight(this._scene, 'blue', 0, 1, -8);
-    // new Pointlight(this._scene, 'indigo', 0, 1, -10);
-    // new Pointlight(this._scene, 'purple', 0, 1, -12);
-
-    // new Pointlight(this._scene, 'red', 0, 2, -13);
-    // new Pointlight(this._scene, 'orange', 0, 2, -15);
-    // new Pointlight(this._scene, 'yellow', 0, 2, -17);
-    // new Pointlight(this._scene, 'green', 0, 2, -19);
-    // new Pointlight(this._scene, 'blue', 0, 2, -21);
-    // new Pointlight(this._scene, 'indigo', 0, 3, -23);
-    // new Pointlight(this._scene, 'purple', 0, 3, -25);
-
-    // for (let i = 0; i < rainbow.length; i++) {
-    //   new Pointlight(this._scene, rainbow[i], 0, 0, -i - 1, false);
-    // }
-    // for (let i = 0; i < rainbow.length; i++) {
-    //   new Pointlight(this._scene, rainbow[i], 0, 1, -i - 5, false);
-    // }
-    // for (let i = 0; i < rainbow.length; i++) {
-    //   new Pointlight(this._scene, rainbow[i], 0, 2, -i - 10, false);
-    // }
-    // new Pointlight(this._scene, 'green', 0, 3, -18);
+    // const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    // this._scene.add(ambientLight);
+    // new Pointlight(this._scene, 0xffffff, -1, 1, 0);
+    new Spotlight(this._scene, 0xffffff, 0, 2, 0);
   }
-
-  // pointlight() {
-  //   let p = this._camera.position;
-  //   new Pointlight(this._scene, 'red', p.x, p.y, p.z);
-  // }
 
   _setGLTFLoader() {
     new GLTF('../../public/gltf/root.glb', this._scene, this._worldOctree);
@@ -218,7 +160,7 @@ class RootHTML {
   }
 
   teleportPlayerIfOob() {
-    if (this._camera.position.y <= -25) {
+    if (this._camera.position.y <= -50) {
       this._playerCapsule.start.set(0, 0.35, 0);
       this._playerCapsule.end.set(0, 1, 0);
       this._playerCapsule.radius = 0.35;
@@ -234,10 +176,24 @@ class RootHTML {
   }
 
   animate() {
-    // console.log(this._camera.position);
+    if (
+      this._camera.position.z <= -1 &&
+      this._camera.position.z >= -1.09 &&
+      this.stairSwitch
+    ) {
+      this.stair();
+    }
+
+    if (
+      this._camera.position.z <= -23 &&
+      this._camera.position.y <= -20 &&
+      this._camera.position.y >= -21
+    ) {
+      location.href = '/routing.html';
+    }
+
     const STEPS_PER_FRAME = 30;
     const deltaTime = Math.min(0.05, this._clock.getDelta()) / STEPS_PER_FRAME;
-    // this.pointlight();
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
       this.controls(deltaTime);
       this.updatePlayer(deltaTime);
@@ -245,6 +201,26 @@ class RootHTML {
     }
     this._renderer.render(this._scene, this._camera);
     requestAnimationFrame(this.animate.bind(this));
+  }
+
+  stair() {
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    this._scene.add(ambientLight);
+    new Pointlight(this._scene, 'red', 0, 0, -1);
+    new Pointlight(this._scene, 'orange', 0, 0, -3);
+    new Pointlight(this._scene, 'yellow', 0, 1, -5);
+    new Pointlight(this._scene, 'green', 0, 1, -6);
+    new Pointlight(this._scene, 'blue', 0, 1, -8);
+    new Pointlight(this._scene, 'indigo', 0, 1, -10);
+    new Pointlight(this._scene, 'purple', 0, 1, -12);
+    new Pointlight(this._scene, 'red', 0, 2, -12);
+    new Pointlight(this._scene, 'orange', 0, 2, -14);
+    new Pointlight(this._scene, 'yellow', 0, 2, -16);
+    new Pointlight(this._scene, 'green', 0, 2, -18);
+    new Pointlight(this._scene, 'blue', 0, 2, -19);
+    new Pointlight(this._scene, 'indigo', 0, 3, -21);
+    new Pointlight(this._scene, 'purple', 0, 3, -23);
+    this.stairSwitch = false;
   }
 }
 
