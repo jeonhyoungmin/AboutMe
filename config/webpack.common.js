@@ -8,6 +8,10 @@ const common = {
   entry: {
     main: './src/script.js',
     root: './src/root/script.js',
+    routing: './src/routing/script.js',
+    clock: './src/clock/script.js',
+    ugauga: './src/ugauga/script.js',
+    meojeonpass: './src/meojeonpass/script.js',
   },
   output: {
     filename: '[name].js',
@@ -28,6 +32,30 @@ const common = {
       filename: 'root.html',
       template: path.resolve(__dirname, 'src/root/index.html'),
       chunks: ['root'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'routing.html',
+      template: path.resolve(__dirname, './src/routing/index.html'),
+      chunks: ['routing'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'clock.html',
+      template: path.resolve(__dirname, './src/clock/index.html'),
+      chunks: ['clock'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'ugauga.html',
+      template: path.resolve(__dirname, './src/ugauga/index.html'),
+      chunks: ['ugauga'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'meojeonpass.html',
+      template: path.resolve(__dirname, './src/meojeonpass/index.html'),
+      chunks: ['meojeonpass'],
       minify: true,
     }),
     new MiniCSSExtractPlugin(),
