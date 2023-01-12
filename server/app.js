@@ -25,10 +25,7 @@ createServer((req, res) => {
 
     // cors: 모든 접근 허용
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader(
-      'Access-Control-Allow-Methods',
-      'GET, POST, PUT, PATCH, DELETE'
-    );
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
     // res.setHeader(
     //   'Access-Control-Allow-Headers',
     //   'Content-Type, Authorization'
@@ -52,6 +49,12 @@ createServer((req, res) => {
       case url.endsWith('hdr') ? url : '':
         staticRoute(`dist${url}`, 200, 'image/vnd.radiance', '');
         break;
+      case url.endsWith('png') ? url : '':
+        staticRoute(`dist${url}`, 200, 'image/png', '');
+        break;
+      case url.endsWith('jpg') ? url : '':
+        staticRoute(`dist${url}`, 200, 'image/jpeg', '');
+        break;
 
       // 메인 페이지 3D 파일
       // case '/value.js':
@@ -65,7 +68,7 @@ createServer((req, res) => {
         break;
 
       // 페이지네이션 용 GET 요청
-      case '/first.html':
+      case '/root.html':
         staticRoute(`dist${url}`, 301, 'text/html');
 
         // const data = {
