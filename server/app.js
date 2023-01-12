@@ -59,6 +59,18 @@ createServer((req, res) => {
       case '/root.html':
         staticRoute(`dist${url}`, 200, 'text/html');
         break;
+      case '/routing.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/clock.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/ugauga.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/hipass.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
     }
   }
 }).listen(port, () => {
