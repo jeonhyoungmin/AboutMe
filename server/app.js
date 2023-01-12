@@ -26,10 +26,6 @@ createServer((req, res) => {
     // cors: 모든 접근 허용
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-    // res.setHeader(
-    //   'Access-Control-Allow-Headers',
-    //   'Content-Type, Authorization'
-    // );
 
     switch (url) {
       case '/favicon.ico':
@@ -55,30 +51,25 @@ createServer((req, res) => {
       case url.endsWith('jpg') ? url : '':
         staticRoute(`dist${url}`, 200, 'image/jpeg', '');
         break;
-
-      // 메인 페이지 3D 파일
-      // case '/value.js':
-      //   staticRoute(`../src${url}`, 200);
-      //   break;
-      // case url.startsWith('/node_modules') ? url : '':
-      //   staticRoute(`${url}`, 200);
-      //   break;
       case url.startsWith('/public/gltf') ? url : '':
         staticRoute(`.${url}`, 200, 'model/gltf-binary', '');
         break;
 
       // 페이지네이션 용 GET 요청
       case '/root.html':
-        staticRoute(`dist${url}`, 301, 'text/html');
-
-        // const data = {
-        //   상자: '하이',
-        // };
-        // res.writeHead(200, {
-        //   'Content-Type': 'application/json; charset=utf-8',
-        // });
-        // res.write(JSON.stringify(data));
-        // res.end();
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/routing.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/clock.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/ugauga.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/hipass.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
         break;
     }
   }

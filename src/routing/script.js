@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
-import '../../public/gltf/root.glb';
+import '../../public/gltf/routing.glb';
 import './style.css';
 
 import GLTF from '../components/GLTF.js';
 import Camera from '../components/Camera.js';
-import Raycaster from '../components/Raycaster.js';
+// import Raycaster from '../components/Raycaster.js';
 import PlayerCapsule from '../components/Capsule.js';
-import DirectionalLight from '../components/Light.js';
+// import DirectionalLight from '../components/Light.js';
 import Keystates from '../components/Keystates.js';
 import Pointlight from '../components/Pointlight.js';
-import Spotlight from '../components/Spotlight.js';
+// import Spotlight from '../components/Spotlight.js';
 
 class RootHTML {
   constructor() {
@@ -54,7 +54,7 @@ class RootHTML {
   }
 
   _setRaycaster() {
-    new Raycaster(this._camera, this._scene);
+    // new Raycaster(this._camera, this._scene);
   }
 
   _setCamera() {
@@ -66,15 +66,18 @@ class RootHTML {
   }
 
   _setLight() {
-    // new DirectionalLight(this._scene, 0xffffff, 0.1, false);
-    // const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-    // this._scene.add(ambientLight);
-    // new Pointlight(this._scene, 0xffffff, -1, 1, 0);
-    new Spotlight(this._scene, 0xffffff, 0, 2, 0);
+    // new DirectionalLight(this._scene, 0xffffff, 1, false);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    this._scene.add(ambientLight);
+
+    new Pointlight(this._scene, 0xffffff, 0, 0, 0, false, 10, 3); // 입구
+    new Pointlight(this._scene, 0xe90ff, -5, -5, -6, false, 10, 5); // c`lock
+    new Pointlight(this._scene, 0xffff00, 0, -5, -11, false, 10, 5); // ugauga
+    new Pointlight(this._scene, 0x00fa9a, 5, -5, -6, false, 10, 5); // hipass
   }
 
   _setGLTFLoader() {
-    new GLTF('../../public/gltf/root.glb', this._scene, this._worldOctree);
+    new GLTF('../../public/gltf/routing.glb', this._scene, this._worldOctree);
   }
 
   _setKeystates() {
@@ -177,20 +180,26 @@ class RootHTML {
 
   animate() {
     if (
-      this._camera.position.z <= -1 &&
-      this._camera.position.z >= -1.09 &&
-      this.stairSwitch
+      this._camera.position.y <= -25 &&
+      this._camera.position.y >= -25.9 &&
+      this._camera.position.x <= -5
     ) {
-      this.stair();
-    }
-
+      console.log("c'lock");
+    } // c`lock
     if (
-      this._camera.position.z <= -23 &&
-      this._camera.position.y <= -20 &&
-      this._camera.position.y >= -21
+      this._camera.position.y <= -25 &&
+      this._camera.position.y >= -25.9 &&
+      this._camera.position.z <= -11
     ) {
-      location.href = '/routing.html';
-    }
+      location.href = '/ugauga.html';
+    } // ugauga
+    if (
+      this._camera.position.y <= -25 &&
+      this._camera.position.y >= -25.9 &&
+      this._camera.position.x >= 5
+    ) {
+      location.href = '/meojeonpass.html';
+    } // hipass
 
     const STEPS_PER_FRAME = 30;
     const deltaTime = Math.min(0.05, this._clock.getDelta()) / STEPS_PER_FRAME;
@@ -201,26 +210,6 @@ class RootHTML {
     }
     this._renderer.render(this._scene, this._camera);
     requestAnimationFrame(this.animate.bind(this));
-  }
-
-  stair() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-    this._scene.add(ambientLight);
-    new Pointlight(this._scene, 'red', 0, 0, -1);
-    new Pointlight(this._scene, 'orange', 0, 0, -3);
-    new Pointlight(this._scene, 'yellow', 0, 1, -5);
-    new Pointlight(this._scene, 'green', 0, 1, -6);
-    new Pointlight(this._scene, 'blue', 0, 1, -8);
-    new Pointlight(this._scene, 'indigo', 0, 1, -10);
-    new Pointlight(this._scene, 'purple', 0, 1, -12);
-    new Pointlight(this._scene, 'red', 0, 2, -12);
-    new Pointlight(this._scene, 'orange', 0, 2, -14);
-    new Pointlight(this._scene, 'yellow', 0, 2, -16);
-    new Pointlight(this._scene, 'green', 0, 2, -18);
-    new Pointlight(this._scene, 'blue', 0, 2, -19);
-    new Pointlight(this._scene, 'indigo', 0, 3, -21);
-    new Pointlight(this._scene, 'purple', 0, 3, -23);
-    this.stairSwitch = false;
   }
 }
 
