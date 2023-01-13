@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
-import '../../public/gltf/routing.glb';
+import '../../public/gltf/falling_hipass.glb';
 import './style.css';
 
 import GLTF from '../components/GLTF.js';
@@ -10,9 +10,9 @@ import PlayerCapsule from '../components/Capsule.js';
 // import DirectionalLight from '../components/Light.js';
 import Keystates from '../components/Keystates.js';
 import Pointlight from '../components/Pointlight.js';
-import Spotlight from '../components/Spotlight.js';
-// http://43.200.117.50/
-class RootHTML {
+// import Spotlight from '../components/Spotlight.js';
+
+class MeojeonpassFalling {
   constructor() {
     this.stairSwitch = true;
 
@@ -70,14 +70,15 @@ class RootHTML {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     this._scene.add(ambientLight);
 
-    new Pointlight(this._scene, 0xffffff, 0, 0, 0, false, 10, 3); // 입구
-    new Pointlight(this._scene, 0xe90ff, -5, -5, -6, false, 10, 5); // c`lock
-    new Pointlight(this._scene, 0xffff00, 0, -5, -11, false, 10, 5); // ugauga
-    new Pointlight(this._scene, 0x00fa9a, 5, -5, -6, false, 10, 5); // hipass
+    new Pointlight(this._scene, 0x00fa9a, 0, 0, 0, false, 10, 2); // 입구
   }
 
   _setGLTFLoader() {
-    new GLTF('../../public/gltf/routing.glb', this._scene, this._worldOctree);
+    new GLTF(
+      '../../public/gltf/falling_hipass.glb',
+      this._scene,
+      this._worldOctree
+    );
   }
 
   _setKeystates() {
@@ -147,7 +148,7 @@ class RootHTML {
   }
 
   updatePlayer(deltaTime) {
-    const GRAVITY = 30;
+    const GRAVITY = 60;
     let damping = Math.exp(-6 * deltaTime) - 1;
     if (!this.playerOnFloor) {
       this._playerVelocity.y -= GRAVITY * deltaTime;
@@ -163,7 +164,7 @@ class RootHTML {
   }
 
   teleportPlayerIfOob() {
-    if (this._camera.position.y <= -50) {
+    if (this._camera.position.y <= -200) {
       this._playerCapsule.start.set(0, 0.35, 0);
       this._playerCapsule.end.set(0, 1, 0);
       this._playerCapsule.radius = 0.35;
@@ -179,21 +180,9 @@ class RootHTML {
   }
 
   animate() {
-    // if() // c`lock
-    if (
-      this._camera.position.y <= -25 &&
-      this._camera.position.y >= -25.9 &&
-      this._camera.position.z <= -11
-    ) {
+    if (this._camera.position.y <= -198 && this._camera.position.y >= -199.9) {
       console.log('ugauga');
-    } // ugauga
-    if (
-      this._camera.position.y <= -25 &&
-      this._camera.position.y >= -25.9 &&
-      this._camera.position.x >= 5
-    ) {
-      console.log('hipass');
-    } // hipass
+    }
 
     const STEPS_PER_FRAME = 30;
     const deltaTime = Math.min(0.05, this._clock.getDelta()) / STEPS_PER_FRAME;
@@ -208,5 +197,5 @@ class RootHTML {
 }
 
 window.onload = () => {
-  new RootHTML();
+  new MeojeonpassFalling();
 };
