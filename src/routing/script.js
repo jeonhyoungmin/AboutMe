@@ -12,7 +12,7 @@ import Keystates from '../components/Keystates.js';
 import Pointlight from '../components/Pointlight.js';
 // import Spotlight from '../components/Spotlight.js';
 
-class RootHTML {
+class Routing {
   constructor() {
     this.stairSwitch = true;
 
@@ -184,7 +184,7 @@ class RootHTML {
       this._camera.position.y >= -25.9 &&
       this._camera.position.x <= -5
     ) {
-      console.log("c'lock");
+      location.href = '/clock.html';
     } // c`lock
     if (
       this._camera.position.y <= -25 &&
@@ -214,5 +214,5 @@ class RootHTML {
 }
 
 window.onload = () => {
-  new RootHTML();
+  new Routing();
 };
