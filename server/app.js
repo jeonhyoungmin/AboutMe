@@ -68,7 +68,7 @@ createServer((req, res) => {
       case '/ugauga.html':
         staticRoute(`dist${url}`, 200, 'text/html');
         break;
-      case '/hipass.html':
+      case '/meojeonpass.html':
         staticRoute(`dist${url}`, 200, 'text/html');
         break;
     }
