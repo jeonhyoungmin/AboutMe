@@ -71,6 +71,12 @@ createServer((req, res) => {
       case '/meojeonpass.html':
         staticRoute(`dist${url}`, 200, 'text/html');
         break;
+      case '/ugauga_pr.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
+      case '/meojeonpass_pr.html':
+        staticRoute(`dist${url}`, 200, 'text/html');
+        break;
     }
   }
 }).listen(port, () => {
