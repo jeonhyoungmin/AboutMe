@@ -77,6 +77,11 @@ createServer((req, res) => {
       case '/meojeonpass_pr.html':
         staticRoute(`dist${url}`, 200, 'text/html');
         break;
+
+      // mp4
+      case url.endsWith('mp4') ? url : '':
+        staticRoute(`dist${url}`, 200, 'video/mp4', '');
+        break;
     }
   }
 }).listen(port, () => {
