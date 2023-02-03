@@ -136,7 +136,7 @@ body {
 .page {
   width: 100%;
   height: 80vmax;
-  background-color: rgba(var(--green-3));
+  background-color: rgba(var(--white));
   display: flex;
   justify-content: center;
   align-items: center;
@@ -151,6 +151,9 @@ body {
 .video_media_box {
   width: 30%;
   height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .page_media {
