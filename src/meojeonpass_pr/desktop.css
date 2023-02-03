@@ -1,0 +1,171 @@
+@keyframes hiding_box_moving {
+  0% {
+    width: 1vmax;
+    height: 15vmax;
+    border-bottom: 0.5vw solid rgb(var(--pink));
+  }
+  20% {
+    width: 65vmax;
+    height: 15vmax;
+    border-bottom: 0.5vw solid rgb(var(--pink));
+  }
+  50% {
+    height: 1vmax;
+    border-bottom: 0.2vw solid rgb(var(--pink));
+  }
+  60% {
+    border-bottom: 0.1vw solid rgb(var(--pink));
+  }
+  100% {
+    height: 0vmax;
+    border-bottom: 0vw solid rgb(var(--pink));
+  }
+}
+
+@keyframes loading_box_moving {
+  0% {
+    position: relative;
+    bottom: 0;
+  }
+  100% {
+    bottom: 5vmax;
+  }
+}
+
+@keyframes contents_up {
+  0% {
+    top: 100vh;
+  }
+  100% {
+    top: 80vh;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(var(--green-3));
+  width: 100%;
+  height: 0vh;
+}
+
+.loading {
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(var(--white));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading_box {
+  width: 65vmax;
+  height: 15vmax;
+  color: rgb(var(--white));
+  background-color: rgb(var(--white));
+  font-size: 10vmax;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+.loading_box_move {
+  width: 65vmax;
+  height: 15vmax;
+  font-size: 10vmax;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  position: relative;
+  bottom: 5vmax;
+  background-color: rgba(var(--white));
+  animation: 1s loading_box_moving;
+}
+
+.hiding_box {
+  height: 15vmax;
+  background-color: red;
+  position: absolute;
+  border-bottom: 0.5vw solid rgb(var(--pink));
+}
+
+.hiding_box_move {
+  background-color: rgba(var(--white));
+  position: absolute;
+  border-bottom: 0.5vw solid rgb(var(--pink));
+  animation: 3s hiding_box_moving;
+}
+
+#root {
+  display: none;
+}
+
+.meojeon {
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(var(--green-1));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 1;
+}
+
+.meojeon_box {
+  width: 65vmax;
+  height: 15vmax;
+  color: rgb(var(--white));
+  background-color: rgba(var(--green-1));
+  font-size: 10vmax;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  position: relative;
+  bottom: 5vmax;
+}
+
+.contents_up {
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  animation: 1s contents_up;
+  top: 80vh;
+}
+
+.page {
+  width: 100%;
+  height: 80vmax;
+  background-color: rgba(var(--green-3));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.entire_pr_box {
+  width: 70vmax;
+  height: 55vmax;
+  display: flex;
+}
+
+.video_media_box {
+  width: 30%;
+  height: inherit;
+}
+
+.page_media {
+  width: 100%;
+  height: 70%;
+  position: relative;
+}
+
+.pr_box {
+  width: 70%;
+  height: inherit;
+}
+/* .team {
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(var(--pink));
+  position: relative;
+} */
