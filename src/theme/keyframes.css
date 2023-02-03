@@ -1,0 +1,23 @@
+@keyframes hiding_box_moving {
+  0% {
+    width: 1vmax;
+    height: 15vmax;
+    border-bottom: 0.5vw solid rgb(var(--pink));
+  }
+  20% {
+    width: 65vmax;
+    height: 15vmax;
+    border-bottom: 0.5vw solid rgb(var(--pink));
+  }
+  50% {
+    height: 1vmax;
+    border-bottom: 0.2vw solid rgb(var(--pink));
+  }
+  60% {
+    border-bottom: 0.1vw solid rgb(var(--pink));
+  }
+  100% {
+    height: 0vmax;
+    border-bottom: 0vw solid rgb(var(--pink));
+  }
+}
