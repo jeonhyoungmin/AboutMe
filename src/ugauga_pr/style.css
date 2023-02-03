@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  background-color: pink;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+  /* transition: 5s linear; */
+}
+
+.test {
+  width: 50%;
+  height: 50%;
+  background-color: blue;
+  transform: rotateY(360deg);
+  transform-style: preserve-3d;
+  position: relative;
+  perspective: 1000px;
+  transition: 5s linear;
+}
+
+.text {
+  transform: translateZ(10px);
+  transition: 5s linear;
+}
