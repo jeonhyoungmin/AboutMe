@@ -189,7 +189,7 @@ class MeojeonpassFalling {
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
       this.controls(deltaTime);
       this.updatePlayer(deltaTime);
-      this.teleportPlayerIfOob();
+      // this.teleportPlayerIfOob();
     }
     this._renderer.render(this._scene, this._camera);
     requestAnimationFrame(this.animate.bind(this));
