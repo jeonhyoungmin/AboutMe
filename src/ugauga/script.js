@@ -181,7 +181,7 @@ class UgaugaFalling {
 
   animate() {
     if (this._camera.position.y <= -198 && this._camera.position.y >= -199.9) {
-      console.log('ugauga');
+      location.href = '/ugauga_pr.html';
     }
 
     const STEPS_PER_FRAME = 30;

@@ -12,6 +12,8 @@ const common = {
     clock: './src/clock/script.js',
     ugauga: './src/ugauga/script.js',
     meojeonpass: './src/meojeonpass/script.js',
+    ugauga_pr: './src/ugauga_pr/script.js',
+    meojeonpass_pr: './src/meojeonpass_pr/script.js',
   },
   output: {
     filename: '[name].js',
@@ -58,6 +60,18 @@ const common = {
       chunks: ['meojeonpass'],
       minify: true,
     }),
+    new HtmlWebpackPlugin({
+      filename: 'ugauga_pr.html',
+      template: path.resolve(__dirname, './src/ugauga_pr/index.html'),
+      chunks: ['ugauga_pr'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'meojeonpass_pr.html',
+      template: path.resolve(__dirname, './src/meojeonpass_pr/index.html'),
+      chunks: ['meojeonpass_pr'],
+      minify: true,
+    }),
     new MiniCSSExtractPlugin(),
   ],
   module: {
@@ -93,6 +107,17 @@ const common = {
             loader: 'file-loader',
             options: {
               name: 'public/gltf/[name].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.mp4$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'public/video/[name].[ext]',
             },
           },
         ],
