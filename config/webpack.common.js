@@ -111,6 +111,17 @@ const common = {
           },
         ],
       },
+      {
+        test: /\.mp4$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'public/video/[name].[ext]',
+            },
+          },
+        ],
+      },
       // {
       //   test: /\.glb$/,
       //   loader: 'gltf-loader',
