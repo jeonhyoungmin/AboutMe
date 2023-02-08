@@ -1,13 +1,13 @@
-import './desktop.css';
-import './tablet.css';
-import './mobile.css';
+import '../theme/meojeonpass_color.css';
 import '../theme/fonts.css';
-import '../theme/color.css';
-import '../../public/video/intro.mp4';
-import '../../public/video/congestion&info.mp4';
-import '../../public/video/limit.mp4';
-import '../../public/video/cctv.mp4';
-import pr_page_maker from '../modules/entire_pr_box_maker.js';
+import './desktop.css';
+import './mobile_horizontal.css';
+import './mobile_vertical.css';
+import entire_pr_page_maker from '../modules/entire_pr_box_maker.js';
+import observer_event from '../modules/observer_event.js';
+import { contents } from './meojeonpass_pr_contents.js';
+import team_introduction_maker from '../modules/team_introduction_maker.js';
+import team_introduction_event from '../modules/team_introduction_event.js';
 
 class Meojeonpass_pr {
   constructor() {
@@ -20,12 +20,42 @@ class Meojeonpass_pr {
     this._time = 0;
     this.bottom = 20;
 
+    // tag 생성
+    this.pr_maker();
+    this.team_introduction();
+
+    // event
+    this.observer_event();
+    this.loading_animation();
+    this.team_introduction_event();
+  }
+
+  pr_maker() {
+    contents.forEach((e) => {
+      new entire_pr_page_maker(this._root.children[1], e[0], e[1], e[2], e[3]);
+    });
+  }
+
+  observer_event() {
+    new observer_event('.page_media');
+    new observer_event('.word_array');
+  }
+
+  team_introduction() {
+    new team_introduction_maker(this._root.children[1]);
+  }
+
+  team_introduction_event() {
+    new team_introduction_event();
+  }
+
+  loading_animation() {
     const animation = () => {
       if (this._time === 0) {
         this._hiding_box.className = 'hiding_box_move';
       }
       if (this._time === 50) {
-        this._loading_box.style.color = 'rgb(var(--green-1))';
+        this._loading_box.style.color = 'rgb(var(--main-1))';
       }
       if (this._time === 70) {
         this._loading_box.className = 'loading_box_move';
@@ -39,9 +69,9 @@ class Meojeonpass_pr {
       const loadingAnimation = requestAnimationFrame(animation);
 
       if (this._time === 120) {
-        this._loading.style.backgroundColor = 'rgb(var(--green-1))';
-        this._loading_box.style.backgroundColor = 'rgb(var(--green-1))';
-        this._loading_box.style.color = 'rgb(var(--white))';
+        this._loading.style.backgroundColor = 'rgb(var(--main-1))';
+        this._loading_box.style.backgroundColor = 'rgb(var(--main-1))';
+        this._loading_box.style.color = 'rgb(var(--main-4))';
         this._loading_box.style.transition = '1s';
         this._loading.style.transition = '1s';
       }
@@ -52,40 +82,7 @@ class Meojeonpass_pr {
       }
     };
     requestAnimationFrame(animation);
-
-    this.pr_maker();
-    this.observer_event();
-    this.scroll_event();
   }
-
-  pr_maker() {
-    new pr_page_maker(this._root.children[1], '../../public/video/intro.mp4');
-    new pr_page_maker(
-      this._root.children[1],
-      '../../public/video/congestion&info.mp4'
-    );
-    new pr_page_maker(this._root.children[1], '../../public/video/limit.mp4');
-    new pr_page_maker(this._root.children[1], '../../public/video/cctv.mp4');
-  }
-  observer_event() {
-    this._page_media = document.querySelectorAll('.page_media');
-    const observer = new IntersectionObserver((e) => {
-      console.log(e);
-      e.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.style.opacity = '1';
-          e.target.style.transition = '1s';
-        } else {
-          e.target.style.opacity = '0';
-          e.target.style.transition = '1s';
-        }
-      });
-    });
-    for (let i = 0; i < this._page_media.length; i++) {
-      observer.observe(this._page_media[i]);
-    }
-  }
-  scroll_event() {}
 }
 
 window.onload = () => {
