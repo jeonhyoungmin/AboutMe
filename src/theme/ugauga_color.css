@@ -1,0 +1,16 @@
+:root {
+  --main-1: 242, 235, 133;
+  --main-2: 242, 232, 94;
+  --main-3: 255, 254, 163;
+  --main-4: 242, 242, 242;
+  --pink: 242, 181, 167;
+  --team_introduction: 168, 191, 170;
+  --team_member_name_color: 204, 219, 178;
+  --team_member_background-1: 191, 148, 122;
+  --team_member_background-2: 166, 101, 78;
+  --team_member_background-3: 115, 42, 16;
+  /* --team_member_background-3: 217, 61, 4; */
+  --team_member_background-4: 166, 101, 78;
+  --team_member_background-5: 191, 148, 122;
+  --team_member_card_background: 95, 158, 160;
+}
