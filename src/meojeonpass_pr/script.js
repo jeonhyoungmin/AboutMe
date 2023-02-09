@@ -5,7 +5,7 @@ import './mobile_horizontal.css';
 import './mobile_vertical.css';
 import entire_pr_page_maker from '../modules/entire_pr_box_maker.js';
 import observer_event from '../modules/observer_event.js';
-import { contents } from './meojeonpass_pr_contents.js';
+import { contents, team_member } from './meojeonpass_pr_contents.js';
 import team_introduction_maker from '../modules/team_introduction_maker.js';
 import team_introduction_event from '../modules/team_introduction_event.js';
 
@@ -15,7 +15,7 @@ class Meojeonpass_pr {
     this._loading = document.querySelector('.loading');
     this._loading_box = document.querySelector('.loading_box');
     this._hiding_box = document.querySelector('.hiding_box');
-    this._meojeon = document.querySelector('.meojeon');
+    this._title = document.querySelector('.title');
     this._contents = document.querySelector('.contents');
     this._time = 0;
     this.bottom = 20;
@@ -42,7 +42,7 @@ class Meojeonpass_pr {
   }
 
   team_introduction() {
-    new team_introduction_maker(this._root.children[1]);
+    new team_introduction_maker(this._root.children[1], team_member);
   }
 
   team_introduction_event() {
@@ -62,7 +62,7 @@ class Meojeonpass_pr {
         this._root.style.display = 'contents';
       }
       if (this._time === 110) {
-        this._meojeon.style.position = 'fixed';
+        this._title.style.position = 'fixed';
       }
 
       this._time++;

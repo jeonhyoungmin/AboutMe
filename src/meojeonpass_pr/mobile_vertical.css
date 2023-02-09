@@ -54,7 +54,7 @@
     animation: 1s loading_box_moving;
   }
 
-  .meojeon_box {
+  .title_box {
     width: 35vmax;
     height: 15vmax;
     color: rgb(var(--main-4));
