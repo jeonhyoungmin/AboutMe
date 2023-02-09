@@ -302,6 +302,7 @@ body {
   height: 10vw;
   color: rgb(var(--main-4));
   transform: rotateY(180deg) translateZ(200px);
+  text-shadow: 10px 10px 10px rgb(30, 30, 30);
 }
 
 .card_back_image {
