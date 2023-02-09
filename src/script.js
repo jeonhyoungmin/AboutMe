@@ -1,20 +1,32 @@
-import './style.css';
 import '../public/img/wallpaper.jpg';
+import '../public/img/wallpaper_chrome.png';
+import '../public/img/wallpaper_trashcan.png';
+import '../public/img/wallpaper_vscode.png';
+import '../public/img/wallpaper_youtube.png';
+import './style.css';
 
-const sizeUp = () => {
-  let vwSize = 3;
-  const volumnUP = setInterval(() => {
-    vwSize = vwSize + 2;
-    svg.style.width = vwSize + 'vw';
-    svg.style.height = vwSize + 'vw';
-    if (vwSize >= 100) {
-      clearInterval(volumnUP);
-      location.href = '/root.html';
-    }
-  }, 16);
+class WallPaper {
+  constructor() {
+    const vscode = document.querySelector('.vscode');
+    let time = 0;
+    vscode.addEventListener('click', () => {
+      const animation = () => {
+        const run = requestAnimationFrame(animation);
+        if (time === 0) {
+          vscode.style.transform = 'translateZ(100px)';
+          vscode.style.transition = '1s';
+        }
+        if (time === 55) {
+          location.href = '/root.html';
+          cancelAnimationFrame(run);
+        }
+        time++;
+      };
+      requestAnimationFrame(animation);
+    });
+  }
+}
+
+window.onload = () => {
+  new WallPaper();
 };
-
-const svg = document.getElementById('svg');
-svg.addEventListener('dblclick', () => {
-  sizeUp();
-});
