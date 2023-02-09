@@ -1,10 +1,9 @@
-import { team_member } from '../meojeonpass_pr/meojeonpass_pr_contents.js';
-
 class team_introduction_maker {
   /**
    *@param {parentNode} parentNode 팀원 소개를 붙일 parentNode
+   *@param {array} team_member 팀원 정보 2중 배열, [[이름, 페이지, 팀원 소개, 이미지]]
    */
-  constructor(parentNode) {
+  constructor(parentNode, team_member) {
     const team = document.createElement('div');
     const team_introduction = document.createElement('div');
     const team_introduction_box = document.createElement('div');

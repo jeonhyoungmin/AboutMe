@@ -22,7 +22,7 @@ class entire_pr_page_maker {
     if (video) {
       page_media = document.createElement('video');
     } else {
-      page_media = document.createElement('div');
+      page_media = document.createElement('img');
     }
 
     // 소개하는 글의 글자 생성
