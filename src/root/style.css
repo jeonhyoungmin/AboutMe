@@ -1,3 +1,30 @@
+@keyframes how_to_use_appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes stage_rotate {
+  0% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+@keyframes loading_rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
 * {
   outline: none;
   margin: 0;
@@ -30,7 +57,74 @@ body {
   z-index: 2;
 }
 
-#descript {
+#howtouse {
   position: absolute;
   z-index: 3;
+  width: 90vw;
+  height: 90vh;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.5);
+  animation: 1s how_to_use_appear;
+  border-radius: 10px;
+  perspective: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotateX(0deg);
+}
+
+.stage {
+  width: 90%;
+  height: 50%;
+  transform-style: preserve-3d;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  font-size: 2vw;
+  align-items: center;
+  text-align: center;
+}
+
+.move {
+  width: 17vw;
+  height: 15vw;
+  background-size: 100% 100%;
+  backface-visibility: hidden;
+  animation: 1s stage_rotate;
+  justify-self: center;
+}
+
+.run {
+  width: 15vw;
+  height: 8vw;
+  background-size: 100% 100%;
+  backface-visibility: hidden;
+  animation: 1s stage_rotate;
+  justify-self: center;
+}
+
+.jump {
+  width: 20vw;
+  height: 8vw;
+  background-size: 100% 100%;
+  backface-visibility: hidden;
+  animation: 1s stage_rotate;
+  justify-self: center;
+}
+
+.mouse {
+  width: 15vw;
+  height: 20vw;
+  background-size: 100% 100%;
+  backface-visibility: hidden;
+  animation: 1s stage_rotate;
+  justify-self: center;
+}
+
+.loading {
+  width: 5vw;
+  height: 5vw;
+  background-size: 100% 100%;
+  position: absolute;
+  opacity: 1;
+  animation: 1s loading_rotate infinite linear;
 }
