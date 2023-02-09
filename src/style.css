@@ -2,22 +2,110 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
-body {
+.wallpaper {
   width: 100vw;
   height: 100vh;
-}
-
-main {
-  width: 100vw;
-  height: 100vh;
+  background-size: 100% 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  perspective: 100px;
 }
 
-svg:hover {
+.trash_can {
+  width: 5vw;
+  height: 5vw;
+  background-size: 100% 100%;
+  position: absolute;
+  top: 1vw;
+  left: 1vw;
+}
+.chrome {
+  width: 5vw;
+  height: 5vw;
+  background-size: 100% 100%;
+  position: absolute;
+  top: 7vw;
+  left: 1vw;
+}
+.youtube {
+  width: 5vw;
+  height: 5vw;
+  background-size: 100% 100%;
+  position: absolute;
+  top: 13vw;
+  left: 1vw;
+}
+.vscode {
+  width: 5vw;
+  height: 5vw;
+  background-size: 100% 100%;
+}
+.vscode:hover {
   cursor: pointer;
+}
+
+@media screen and (max-width: 1023px) {
+  .trash_can {
+    width: 8vw;
+    height: 8vw;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 1vw;
+    left: 1vw;
+  }
+  .chrome {
+    width: 8vw;
+    height: 8vw;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 10vw;
+    left: 1vw;
+  }
+  .youtube {
+    width: 8vw;
+    height: 8vw;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 19vw;
+    left: 1vw;
+  }
+  .vscode {
+    width: 8vw;
+    height: 8vw;
+    background-size: 100% 100%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .trash_can {
+    width: 12vw;
+    height: 12vw;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 1vw;
+    left: 1vw;
+  }
+  .chrome {
+    width: 12vw;
+    height: 12vw;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 14vw;
+    left: 1vw;
+  }
+  .youtube {
+    width: 12vw;
+    height: 12vw;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 27vw;
+    left: 1vw;
+  }
+  .vscode {
+    width: 12vw;
+    height: 12vw;
+    background-size: 100% 100%;
+  }
 }
