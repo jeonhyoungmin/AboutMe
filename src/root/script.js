@@ -11,6 +11,7 @@ import DirectionalLight from '../components/Light.js';
 import Keystates from '../components/Keystates.js';
 import Pointlight from '../components/Pointlight.js';
 import Spotlight from '../components/Spotlight.js';
+import howtouse from '../components/Howtouse.js';
 
 class RootHTML {
   constructor() {
@@ -42,6 +43,7 @@ class RootHTML {
     this.playerOnFloor = false;
     this._clock = clock;
 
+    this._howTouse();
     this._setCamera();
     this._setCapsule();
     this._setLight();
@@ -51,6 +53,10 @@ class RootHTML {
 
     window.onresize = this.resize.bind(this);
     this.animate();
+  }
+
+  _howTouse() {
+    new howtouse();
   }
 
   _setRaycaster() {
@@ -70,7 +76,7 @@ class RootHTML {
     // const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
     // this._scene.add(ambientLight);
     // new Pointlight(this._scene, 0xffffff, -1, 1, 0);
-    new Spotlight(this._scene, 0xffffff, 0, 2, 0);
+    new Spotlight(this._scene, 0xffffff, 0, 2, 0, false, 2);
   }
 
   _setGLTFLoader() {
