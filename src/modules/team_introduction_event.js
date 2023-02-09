@@ -11,7 +11,6 @@ class team_introduction_event {
     );
     let card_back_image = document.querySelectorAll('.card_back_image');
 
-    console.log(card_back_contents);
     for (let i = 0; i < co_worker.length; i++) {
       co_worker[i].addEventListener('mouseover', (e) => {
         co_worker[i].style.transform = 'rotateY(180deg)';
