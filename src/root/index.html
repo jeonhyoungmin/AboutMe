@@ -11,15 +11,34 @@
   <body>
     <div id="root"></div>
     <div id="cursor"></div>
-    <!-- <div id="descript">
-      Click to Play
-      <br />
-      Move: W A S D
-      <br />
-      Run: shift
-      <br />
-      Jump: Space
-    </div> -->
+    <div id="howtouse">
+      <div class="stage">
+        <div
+          class="move"
+          style="background-image: url('../../public/img/move.png')"
+        ></div>
+        <div
+          class="run"
+          style="background-image: url('../../public/img/run.png')"
+        ></div>
+        <div
+          class="jump"
+          style="background-image: url('../../public/img/jump.png')"
+        ></div>
+        <div
+          class="mouse"
+          style="background-image: url('../../public/img/mouse.png')"
+        ></div>
+        <div class="move_word">Move</div>
+        <div class="run_word">Run</div>
+        <div class="jump_word">Jump</div>
+        <div class="mouse_word">click to play</div>
+      </div>
+      <div
+        class="loading"
+        style="background-image: url('../../public/img/root_loading.png')"
+      ></div>
+    </div>
     <script type="importmap">
       {
         "imports": {
@@ -37,6 +56,5 @@
         }
       }
     </script>
-    <!-- <script type="module" src="./script.js" defer></script> -->
   </body>
 </html>
