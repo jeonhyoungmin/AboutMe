@@ -11,4 +11,4 @@ webpack build, Node.js app.js
 
 ### [first project: clock](https://github.com/jeonhyoungmin/project-hackathon)
 ### [second project: ugauga](https://github.com/jeonhyoungmin/Stock_ProjectA)
-### [third project: meojeon_pass](https://github.com/jeonhyoungmin/ProjectB)
+### [third project: meojeon_pass](https://github.com/jeonhyoungmin/ProjectB) [배포](http://43.200.117.50/)
