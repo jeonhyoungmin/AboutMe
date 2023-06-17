@@ -1,5 +1,6 @@
 # [About Me](https://port-0-aboutme-9z2ygb26lcbwua9l.gksl2.cloudtype.app/) - web[배포사이트 바로가기]
 - Blender 와 Three.js 를 활용하여 VS-Code 내부로 들어가는 경험 제공
+- VS-Code의 하위 폴더 혹은 파일로 이동하는 것을 낙하로 표현
 - 3가지의 프로젝트 소개
   - #### [first project: clock](https://github.com/jeonhyoungmin/project-hackathon)
   - #### [second project: ugauga](https://github.com/jeonhyoungmin/Stock_ProjectA)
@@ -11,47 +12,32 @@
 - 프로젝트 명: AboutMe
 - 개발 인원: 1명
 - 개발 기간: 2022. 12.25 - 2023.02.05 (1개월 12일)
-- 개발 언어: JAVA 11
+- 개발 언어: JavaScript
 
 ### 2. 프로젝트 기능
-- **사용자 -** 회원가입 및 로그인, 회원정보 수정, 회원가입시 유효성 검사 및 중복 검사
-- **게시판 -** 게시판 CRUD 기능, 조회수, 댓글 및 답글 수, 페이징 및 검색 처리
-- **댓글 및 답글 -** 댓글 및 답글(대댓글) CRUD 기능
+- **사용자 -** 1인칭 캐릭터 조종 기능
+- **프로젝트 -** 3가지의 프로젝트 소개
 
 ### 3. 사용 기술
 #### 3-1. 백엔드
 
 ##### 프레임워크 / 라이브러리
-- JAVA 11
-- Spring (5.0.7)
-- DB
-  - MyBatis(3.5.13)
-  - MyBatis-Spring(3.0.0)
-  - MySQL-Connector/J(8.0.33) (JAVA JDBC)
-  - Spring-JDBC(5.0.7 RELEASE)
-  - AspectJ-Weaver(Transaction-Manager, 1.9.19)
-- JUnit4
-    - Spring TestContext Framework(JUnit for Spring, 5.0.7 RELEASE),
-- JSON Library
-    - Jackson-Databind(2.15.0)
-
-##### DataBase
-- MySQL(8.0)
-- 
-##### Server
-- Tomcat(9.0.73)
+- Node.js
 
 ##### Build Tool
-- Maven
+- Webpack
 
 ##### Deployment Environment
-- AWS-EC2
+- CloudType
 
 ##### Configuration Management
 - Git(2.37.0)
 - Git-Hub
 
 #### 3-2. 프론트엔드
-- Html/Css
+- HTML5/CSS3
 - JavaScript
-- JSP
+- Three.js
+
+#### 3-3. 기타 기술
+- Blender (3.3.1)
