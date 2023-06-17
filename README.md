@@ -22,10 +22,10 @@
 #### 3-1. 백엔드
 
 ##### 프레임워크 / 라이브러리
-- Node.js
+- Node.js (18.9.1)
 
 ##### Build Tool
-- Webpack
+- Webpack (5.75.0)
 
 ##### Deployment Environment
 - CloudType
