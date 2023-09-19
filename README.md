@@ -1,5 +1,4 @@
 # [About Me](https://port-0-aboutme-9z2ygb26lcbwua9l.gksl2.cloudtype.app/) - web[배포사이트 바로가기]
-깃 테스트
 - Blender 와 Three.js 를 활용하여 VS-Code 내부로 들어가는 경험 제공
 - VS-Code의 하위 폴더 혹은 파일로 이동하는 것을 낙하로 표현
 - 3가지의 프로젝트 소개
